@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ShorterUrl.Data;
+using ShorterUrl.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,4 +33,5 @@ void ConfigureServices(WebApplicationBuilder builder)
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+    builder.Services.AddTransient<ShortUrlRepository>();
 }
