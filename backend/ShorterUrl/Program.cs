@@ -4,6 +4,7 @@ using ShorterUrl.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 ConfigureMvc(builder);
+ConfigureServices(builder);
 
 var app = builder.Build();
 

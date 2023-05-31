@@ -34,13 +34,13 @@ public class ShortenUrlMap : IEntityTypeConfiguration<ShortenUrl>
         builder.Property(x => x.CreatedAt)
             .IsRequired()
             .HasColumnName("created_at")
-            .HasColumnType("DATETIME");
+            .HasColumnType("DATE");
 
         // Propriedades
         builder.Property(x => x.ExpiresAt)
             .IsRequired()
             .HasColumnName("expires_at")
-            .HasColumnType("DATETIME");
+            .HasColumnType("DATE");
 
         // Propriedades
         builder.Property(x => x.LongUrl)
