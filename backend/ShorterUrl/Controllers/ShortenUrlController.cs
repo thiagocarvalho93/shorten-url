@@ -65,7 +65,7 @@ namespace ShorterUrl.Controllers
             {
                 var entity = await _repository.GetByUrlAsync(dto.Url);
                 if (entity is not null)
-                    return Ok(entity.Token);
+                    return Ok(entity);
 
                 string token = RandomTokenService.GenerateRandomAlfanumericString();
                 ShortenUrl model = new()
