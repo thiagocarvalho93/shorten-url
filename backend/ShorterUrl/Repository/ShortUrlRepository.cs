@@ -26,7 +26,7 @@ public class ShortUrlRepository
 
     public async Task<ShortenUrl> GetByTokenAsync(string token) => await _context.ShortenUrls.FirstOrDefaultAsync(x => x.Token == token);
 
-    public async Task<ShortenUrl> GetByLongUrlAsync(string longUrl) => await _context.ShortenUrls.FirstOrDefaultAsync(x => x.LongUrl == longUrl);
+    public async Task<ShortenUrl> GetByUrlAsync(string url) => await _context.ShortenUrls.FirstOrDefaultAsync(x => x.Url == url);
 
     public async Task<ShortenUrl> AddAsync(ShortenUrl model)
     {

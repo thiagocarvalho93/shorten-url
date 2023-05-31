@@ -1,12 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace ShorterUrl.DTOs
 {
     public class AddShortUrlDTO
     {
-        public string LongUrl { get; set; }
+        [Required(ErrorMessage = "url is required")]
+        public string Url { get; set; }
     }
 }

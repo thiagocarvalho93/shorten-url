@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using ShorterUrl.DTOs;
 using ShorterUrl.Models;
 using ShorterUrl.Repository;
@@ -14,10 +11,12 @@ namespace ShorterUrl.Controllers
     public class ShortenUrlController : ControllerBase
     {
         private readonly ShortUrlRepository _repository;
+        private readonly IMemoryCache _cache;
 
-        public ShortenUrlController(ShortUrlRepository repository)
+        public ShortenUrlController(ShortUrlRepository repository, IMemoryCache cache)
         {
             _repository = repository;
+            _cache = cache;
         }
 
         [HttpGet("")]
@@ -46,9 +45,12 @@ namespace ShorterUrl.Controllers
         {
             try
             {
-                //TODO check cache
-                var entity = await _repository.GetByTokenAsync(token);
-                return entity is null ? NotFound() : Redirect(entity.LongUrl);
+                var entity = await _cache.GetOrCreateAsync(token, async entry =>
+                {
+                    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(2);
+                    return await _repository.GetByTokenAsync(token);
+                });
+                return entity is null ? NotFound() : Redirect(entity.Url);
             }
             catch
             {
@@ -61,23 +63,20 @@ namespace ShorterUrl.Controllers
         {
             try
             {
-                var entity = await _repository.GetByLongUrlAsync(dto.LongUrl);
+                var entity = await _repository.GetByUrlAsync(dto.Url);
                 if (entity is not null)
-                {
-                    if (DateTime.Now <= entity.ExpiresAt)
-                        return Ok(entity.Token);
-                }
+                    return Ok(entity.Token);
 
-                string token = RandomTokenService.generateRandomAlfanumericString();
+                string token = RandomTokenService.GenerateRandomAlfanumericString();
                 ShortenUrl model = new()
                 {
                     Id = 0,
                     Token = token,
                     CreatedAt = DateTime.Now,
                     ExpiresAt = DateTime.Now.AddDays(1),
-                    LongUrl = dto.LongUrl
+                    Url = dto.Url
                 };
-                var data = await _repository.AddAsync(model);
+                await _repository.AddAsync(model);
 
                 return Created($"{token}", model);
             }

@@ -30,20 +30,17 @@ public class ShortenUrlMap : IEntityTypeConfiguration<ShortenUrl>
             .HasColumnType("VARCHAR")
             .HasMaxLength(20);
 
-        // Propriedades
         builder.Property(x => x.CreatedAt)
             .IsRequired()
             .HasColumnName("created_at")
             .HasColumnType("DATE");
 
-        // Propriedades
         builder.Property(x => x.ExpiresAt)
             .IsRequired()
             .HasColumnName("expires_at")
             .HasColumnType("DATE");
 
-        // Propriedades
-        builder.Property(x => x.LongUrl)
+        builder.Property(x => x.Url)
             .IsRequired()
             .HasColumnName("long_url")
             .HasColumnType("VARCHAR")
