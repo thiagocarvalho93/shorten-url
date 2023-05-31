@@ -21,11 +21,19 @@ namespace ShorterUrl.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> GetAsync()
+        public async Task<IActionResult> GetAsync(
+            [FromQuery] int page = 0,
+            [FromQuery] int pageSize = 25)
         {
             try
             {
-                return Ok(await _repository.GetAsync());
+                var data = await _repository.GetPaginatedAsync(page, pageSize);
+                return Ok(new
+                {
+                    page,
+                    pageSize,
+                    data
+                });
             }
             catch (System.Exception)
             {
@@ -53,7 +61,6 @@ namespace ShorterUrl.Controllers
         {
             try
             {
-                // TODO check cache
                 var entity = await _repository.GetByLongUrlAsync(dto.LongUrl);
                 if (entity is not null)
                 {

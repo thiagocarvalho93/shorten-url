@@ -16,7 +16,13 @@ public class ShortUrlRepository
         _context = context;
     }
 
-    public async Task<List<ShortenUrl>> GetAsync() => await _context.ShortenUrls.ToListAsync();
+    public async Task<List<ShortenUrl>> GetPaginatedAsync(int page, int pageSize)
+    {
+        return await _context.ShortenUrls
+                                .Skip(page * pageSize)
+                                .Take(pageSize)
+                                .ToListAsync();
+    }
 
     public async Task<ShortenUrl> GetByTokenAsync(string token) => await _context.ShortenUrls.FirstOrDefaultAsync(x => x.Token == token);
 
