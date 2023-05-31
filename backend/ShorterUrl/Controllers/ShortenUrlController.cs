@@ -23,25 +23,24 @@ namespace ShorterUrl.Controllers
         [HttpGet("")]
         public async Task<IActionResult> GetAsync() => Ok(await _repository.GetAsync());
 
-        [HttpGet("token/{token}")]
+        [HttpGet("{token}")]
         public async Task<IActionResult> RedirectByTokenAsync([FromRoute] string token)
         {
-            //TODO
-            return Ok(await _repository.GetAsync());
+            var entity = await _repository.GetByTokenAsync(token);
+            return entity is null ? NotFound() : Redirect(entity.LongUrl);
         }
 
         [HttpPost("")]
         public async Task<IActionResult> PostAsync([FromBody] AddShortUrlDTO dto)
         {
-            // verify if already exists
-            var urlDb = await _repository.GetByLongUrlAsync(dto.LongUrl);
-            if (urlDb is not null)
+            // TODO check cache
+            var entity = await _repository.GetByLongUrlAsync(dto.LongUrl);
+            if (entity is not null)
             {
-                if (DateTime.Now <= urlDb.ExpiresAt)
-                    return Ok(urlDb.Token);
+                if (DateTime.Now <= entity.ExpiresAt)
+                    return Ok(entity.Token);
             }
 
-            // add new data
             string token = RandomTokenService.generateValue();
             ShortenUrl model = new()
             {
