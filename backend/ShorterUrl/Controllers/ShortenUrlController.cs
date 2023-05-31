@@ -21,38 +21,63 @@ namespace ShorterUrl.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> GetAsync() => Ok(await _repository.GetAsync());
+        public async Task<IActionResult> GetAsync()
+        {
+            try
+            {
+                return Ok(await _repository.GetAsync());
+            }
+            catch (System.Exception)
+            {
+                return StatusCode(500, "Erro 5X0001");
+            }
+        }
 
         [HttpGet("{token}")]
         public async Task<IActionResult> RedirectByTokenAsync([FromRoute] string token)
         {
-            var entity = await _repository.GetByTokenAsync(token);
-            return entity is null ? NotFound() : Redirect(entity.LongUrl);
+            try
+            {
+                //TODO check cache
+                var entity = await _repository.GetByTokenAsync(token);
+                return entity is null ? NotFound() : Redirect(entity.LongUrl);
+            }
+            catch
+            {
+                return StatusCode(500, "Erro 5X0002");
+            }
         }
 
         [HttpPost("")]
         public async Task<IActionResult> PostAsync([FromBody] AddShortUrlDTO dto)
         {
-            // TODO check cache
-            var entity = await _repository.GetByLongUrlAsync(dto.LongUrl);
-            if (entity is not null)
+            try
             {
-                if (DateTime.Now <= entity.ExpiresAt)
-                    return Ok(entity.Token);
+                // TODO check cache
+                var entity = await _repository.GetByLongUrlAsync(dto.LongUrl);
+                if (entity is not null)
+                {
+                    if (DateTime.Now <= entity.ExpiresAt)
+                        return Ok(entity.Token);
+                }
+
+                string token = RandomTokenService.generateRandomAlfanumericString();
+                ShortenUrl model = new()
+                {
+                    Id = 0,
+                    Token = token,
+                    CreatedAt = DateTime.Now,
+                    ExpiresAt = DateTime.Now.AddDays(1),
+                    LongUrl = dto.LongUrl
+                };
+                var data = await _repository.AddAsync(model);
+
+                return Created($"{token}", model);
             }
-
-            string token = RandomTokenService.generateValue();
-            ShortenUrl model = new()
+            catch
             {
-                Id = 0,
-                Token = token,
-                CreatedAt = DateTime.Now,
-                ExpiresAt = DateTime.Now.AddDays(1),
-                LongUrl = dto.LongUrl
-            };
-            var data = await _repository.AddAsync(model);
-
-            return Created($"{token}", model);
+                return StatusCode(500, "Erro 5X0003");
+            }
         }
 
     }

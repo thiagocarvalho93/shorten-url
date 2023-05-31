@@ -7,12 +7,10 @@ namespace ShorterUrl.Service
 {
     public static class RandomTokenService
     {
-        public static string generateValue()
+        public static string generateRandomAlfanumericString(int size = 5)
         {
             Random res = new Random();
-
             String str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            int size = 5;
 
             String randomstring = "";
 
