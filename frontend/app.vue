@@ -1,7 +1,7 @@
 <template>
-  <div class="isolate bg-gray-950 h-screen px-6 py-24 sm:py-32 lg:px-8">
+  <div class="isolate h-screen px-6 py-24 sm:py-32 lg:px-8">
     <div class="mx-auto max-w-2xl text-center">
-      <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">Short/URL</h2>
+      <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">✂Short/URL</h2>
       <p class="mt-2 text-lg leading-8 text-gray-600">Generate short urls for your links.</p>
     </div>
     <form action="#" method="POST" class="mx-auto mt-16 max-w-xl sm:mt-20">
@@ -23,7 +23,7 @@
               Generate
             </button>
           </div>
-          <p class="text-gray-600 mt-2">URL gerada:</p>
+          <p class="text-gray-600 mt-2">Generated URL:</p>
         </div>
       </div>
     </form>
@@ -39,7 +39,10 @@ export default {
     };
   },
   methods: {
-    async handleClick() {},
+    async handleClick() {
+      const { data: products } = await useFetch("https://fakestoreapi.com/products");
+      console.log(products);
+    },
   },
 };
 </script>
