@@ -31,6 +31,8 @@
 </template>
 
 <script>
+import { API_BASE_URL } from './constants';
+
 export default {
   name: "IndexPage",
   data() {
@@ -40,7 +42,7 @@ export default {
   },
   methods: {
     async handleClick() {
-      const { data: products } = await useFetch("https://fakestoreapi.com/products");
+      const { data: products } = await useFetch(API_BASE_URL);
       console.log(products);
     },
   },
