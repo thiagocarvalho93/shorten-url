@@ -9,7 +9,7 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      title: "Short/URL",
+      title: "ShortURLs",
     },
   },
 });
