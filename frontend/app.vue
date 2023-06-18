@@ -1,10 +1,24 @@
 <template>
-  <div class="isolate h-screen px-6 py-24 sm:py-32 lg:px-8">
-    <div class="mx-auto max-w-2xl text-center">
-      <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">✂ShortURLs</h2>
-      <p class="mt-2 text-lg leading-8 text-gray-400">Generate short urls for your long links!</p>
+  <div class="isolate h-screen p-6 lg:px-8">
+    <!-- dark mode toggle -->
+    <div class="flex justify-end">
+      <label class="relative inline-flex items-center cursor-pointer">
+        <input type="checkbox" @change="toggleDarkMode" v-model="darkMode" class="sr-only peer" />
+        <div
+          class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+        ></div>
+        <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Dark mode</span>
+      </label>
     </div>
-    <form action="#" method="POST" class="mx-auto mt-16 max-w-xl sm:mt-20">
+    <!-- title and subtitle -->
+    <div class="mx-auto mt-24 max-w-2xl text-center">
+      <h2 class="text-3xl font-bold tracking-tight dark:text-white sm:text-4xl">✂ ShortURLs</h2>
+      <p class="mt-2 text-lg leading-8 dark:text-gray-400">
+        Generate short urls for your long links!
+      </p>
+    </div>
+    <!-- inputs -->
+    <form action="#" method="POST" class="mx-auto max-w-xl mt-12">
       <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
         <div class="sm:col-span-2">
           <div class="relative mb-5">
@@ -17,7 +31,7 @@
               ref="urlInput"
             />
             <button
-              class="text-white flex justify-center items-center w-20 absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 dark:disabled:bg-gray-400"
+              class="text-white flex justify-center items-center w-20 absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:bg-gray-400 dark:disabled:bg-gray-400"
               type="button"
               @click="handleGenerate"
               :disabled="invalidUrl"
@@ -37,7 +51,7 @@
               readonly
             />
             <button
-              class="text-blue-700 w-20 absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-4 py-2 dark:bg-gray-200 dark:hover:bg-gray-300 dark:focus:ring-blue-800"
+              class="text-blue-700 w-20 absolute right-2.5 bottom-2.5 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-4 py-2 dark:bg-gray-200 dark:hover:bg-gray-300 dark:focus:ring-blue-800"
               type="button"
               @click="handleCopy"
             >
@@ -52,6 +66,7 @@
 
 <script>
 import { API_BASE_URL } from "./constants";
+import { initFlowbite } from "flowbite";
 
 export default {
   name: "IndexPage",
@@ -61,10 +76,13 @@ export default {
       longUrl: "",
       generatedUrl: "",
       loading: false,
+      darkMode: false,
     };
   },
 
   mounted() {
+    initFlowbite();
+    this.checkDarkMode();
     this.$refs.urlInput.focus();
   },
 
@@ -80,6 +98,27 @@ export default {
     },
   },
   methods: {
+    checkDarkMode() {
+      if (
+        localStorage.theme === "dark" ||
+        (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        this.darkMode = true;
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    },
+
+    toggleDarkMode() {
+      if (this.darkMode) {
+        localStorage.setItem("theme", "dark");
+        document.documentElement.classList.add("dark");
+      } else {
+        localStorage.setItem("theme", "light");
+        document.documentElement.classList.remove("dark");
+      }
+    },
     async handleGenerate() {
       this.loading = true;
       try {
