@@ -120,6 +120,7 @@ export default {
       }
     },
     async handleGenerate() {
+      if (this.invalidUrl) return;
       this.loading = true;
       try {
         const data = await this.postUrl();
