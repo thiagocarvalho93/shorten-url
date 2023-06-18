@@ -16,12 +16,16 @@
               ref="urlInput"
             />
             <button
-              class="text-white w-20 absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 dark:disabled:bg-gray-400"
+              class="text-white flex justify-center items-center w-20 absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 dark:disabled:bg-gray-400"
               type="button"
               @click="handleGenerate"
               :disabled="invalidUrl"
             >
-              Go
+              <div
+                v-if="loading"
+                class="w-5 h-5 border-4 border-dashed rounded-full animate-spin dark:border-white"
+              ></div>
+              <span v-else>Go</span>
             </button>
           </div>
           <div v-if="generatedUrl.token" class="relative">
@@ -54,6 +58,7 @@ export default {
       baseApiUrl: API_BASE_URL,
       longUrl: "",
       generatedUrl: "",
+      loading: false,
     };
   },
 
@@ -67,12 +72,14 @@ export default {
     },
 
     invalidUrl() {
-      const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/
+      const urlRegex =
+        /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/;
       return this.longUrl.length < 1 || !this.longUrl.match(urlRegex);
-    }
+    },
   },
   methods: {
     async handleGenerate() {
+      this.loading = true;
       try {
         const data = await this.postUrl();
         console.log(data);
@@ -80,6 +87,8 @@ export default {
       } catch (e) {
         const message = e.data?.errors ?? "Error connecting to service!"; //TODO
         alert(message);
+      } finally {
+        this.loading = false;
       }
     },
 
