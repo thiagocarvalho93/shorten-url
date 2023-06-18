@@ -2,7 +2,7 @@
   <div class="isolate h-screen px-6 py-24 sm:py-32 lg:px-8">
     <div class="mx-auto max-w-2xl text-center">
       <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">✂ShortURLs</h2>
-      <p class="mt-2 text-lg leading-8 text-gray-600">Generate short urls for your long links!</p>
+      <p class="mt-2 text-lg leading-8 text-gray-400">Generate short urls for your long links!</p>
     </div>
     <form action="#" method="POST" class="mx-auto mt-16 max-w-xl sm:mt-20">
       <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
@@ -12,6 +12,7 @@
               class="block w-full p-4 pr-28 text-sm text-gray-900 border border-gray-300 rounded-md bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Paste here your long URL"
               v-model="longUrl"
+              v-on:keyup.enter="handleGenerate"
               required
               ref="urlInput"
             />
@@ -32,6 +33,7 @@
             <input
               class="block w-full p-4 pr-28 text-sm text-gray-900 border border-gray-300 rounded-md bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-900 dark:border-gray-800 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               v-model="completeGeneratedUrl"
+              v-on:keyup.enter="handleCopy"
               readonly
             />
             <button
