@@ -12,8 +12,8 @@
     </div>
     <!-- title and subtitle -->
     <div class="mx-auto mt-24 max-w-2xl text-center">
-      <h2 class="text-3xl font-bold tracking-tight dark:text-white sm:text-4xl">✂ ShortURLs</h2>
-      <p class="mt-2 text-lg leading-8 dark:text-gray-400">
+      <h2 class="transition duration-500 ease-in-out text-3xl font-bold tracking-tight dark:text-white sm:text-4xl">✂ ShortURLs</h2>
+      <p class="transition duration-500 ease-in-out mt-2 text-lg leading-8 dark:text-gray-400">
         Generate short urls for your long links!
       </p>
     </div>
@@ -23,7 +23,7 @@
         <div class="sm:col-span-2">
           <div class="relative mb-5">
             <input
-              class="block w-full p-4 pr-28 text-sm text-gray-900 border border-gray-300 rounded-md bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              class="transition duration-500 ease-in-out block w-full p-4 pr-28 text-sm text-gray-900 border border-gray-300 rounded-md bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Paste here your long URL"
               v-model="longUrl"
               v-on:keyup.enter="handleGenerate"
@@ -31,7 +31,7 @@
               ref="urlInput"
             />
             <button
-              class="text-white flex justify-center items-center w-20 absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:bg-gray-400 dark:disabled:bg-gray-400"
+              class="transition duration-500 ease-in-out text-white flex justify-center items-center w-20 absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:bg-gray-400 dark:disabled:bg-gray-400"
               type="button"
               @click="handleGenerate"
               :disabled="invalidUrl"
@@ -45,13 +45,13 @@
           </div>
           <div v-if="generatedUrl.token" class="relative">
             <input
-              class="block w-full p-4 pr-28 text-sm text-gray-900 border border-gray-300 rounded-md bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-900 dark:border-gray-800 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              class="transition duration-500 ease-in-out block w-full p-4 pr-28 text-sm text-gray-900 border border-gray-300 rounded-md bg-gray-200 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-900 dark:border-gray-800 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               v-model="completeGeneratedUrl"
               v-on:keyup.enter="handleCopy"
               readonly
             />
             <button
-              class="text-blue-700 w-20 absolute right-2.5 bottom-2.5 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-4 py-2 dark:bg-gray-200 dark:hover:bg-gray-300 dark:focus:ring-blue-800"
+              class="transition duration-500 ease-in-out text-blue-700 w-20 absolute right-2.5 bottom-2.5 bg-white hover:bg-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-4 py-2 dark:bg-gray-200 dark:hover:bg-gray-300 dark:focus:ring-blue-800"
               type="button"
               @click="handleCopy"
             >
