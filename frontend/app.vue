@@ -34,7 +34,7 @@
         </svg>
       </button>
     </div>
-    
+
     <!-- title and subtitle -->
     <div class="mx-auto mt-24 max-w-2xl text-center">
       <h2
@@ -169,9 +169,13 @@ export default {
       }
     },
 
-    handleCopy() {
-      navigator.clipboard.writeText(this.completeGeneratedUrl);
-      alert("Copied to clipboard!");
+    async handleCopy() {
+      try {
+        await navigator.clipboard.writeText(this.completeGeneratedUrl);
+        alert("Copied!");
+      } catch (error) {
+        alert("Cannot copy.");
+      }
     },
 
     async postUrl() {
