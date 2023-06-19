@@ -48,7 +48,7 @@
       >
         ✂ ShortURLs
       </h2>
-      <p class="transition duration-500 ease-in-out mt-2 text-lg leading-8 dark:text-gray-400">
+      <p class="transition duration-500 ease-in-out mt-2 text-lg font-semibold leading-8 dark:text-gray-400">
         Generate short urls for your long links!
       </p>
     </div>
