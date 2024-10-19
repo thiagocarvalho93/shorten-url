@@ -38,7 +38,7 @@ public class GenerateFakeDataJob : IHostedService
 
     private async Task GenerateAnalytics(int threshold, ShortUrlRepository shortUrlRepository, AnalyticsRepository analyticsRepository, CancellationToken cancellationToken)
     {
-        var count = await shortUrlRepository.CountAsync(cancellationToken);
+        var count = await analyticsRepository.CountAsync(cancellationToken);
         if (count < threshold)
         {
             _logger.LogInformation("Generating fake analytics...");

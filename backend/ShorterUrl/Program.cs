@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using ShorterUrl.Data;
+using ShorterUrl.Extensions;
 using ShorterUrl.Jobs;
 using ShorterUrl.Middlewares;
 using ShorterUrl.Repository;
@@ -12,6 +13,8 @@ ConfigureMvc(builder);
 ConfigureServices(builder);
 
 var app = builder.Build();
+
+app.ApplyMigration();
 
 if (app.Environment.IsDevelopment())
 {
