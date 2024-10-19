@@ -27,7 +27,7 @@ public class ShortUrlController : ControllerBase
     {
         var result = await _service.GetByTokenAsync(token, cancellationToken);
 
-        return Redirect(result.Url);
+        return Redirect(result.OriginalUrl);
     }
 
     [HttpPost("")]
@@ -35,6 +35,6 @@ public class ShortUrlController : ControllerBase
     {
         var created = await _service.InsertAsync(dto, cancellationToken);
 
-        return Created($"{created.Token}", created);
+        return Created($"{created.ShortCode}", created);
     }
 }

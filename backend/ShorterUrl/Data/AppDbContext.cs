@@ -7,11 +7,13 @@ namespace ShorterUrl.Data;
 public class AppDbContext : DbContext
 {
     public DbSet<ShortUrlDAO> ShortUrls { get; set; }
+    public DbSet<AnalyticsDAO> Analytics { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new ShortUrlMap());
+        modelBuilder.ApplyConfiguration(new AnalyticsMap());
     }
 }

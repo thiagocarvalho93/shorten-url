@@ -16,9 +16,9 @@ public class ShortUrlMap : IEntityTypeConfiguration<ShortUrlDAO>
             .ValueGeneratedOnAdd()
             .UseIdentityColumn();
 
-        builder.Property(x => x.Token)
+        builder.Property(x => x.ShortCode)
             .IsRequired()
-            .HasColumnName("token")
+            .HasColumnName("short_code")
             .HasColumnType("VARCHAR")
             .HasMaxLength(20);
 
@@ -32,14 +32,14 @@ public class ShortUrlMap : IEntityTypeConfiguration<ShortUrlDAO>
             .HasColumnName("expires_at")
             .HasColumnType("DATE");
 
-        builder.Property(x => x.Url)
+        builder.Property(x => x.OriginalUrl)
             .IsRequired()
-            .HasColumnName("long_url")
+            .HasColumnName("original_url")
             .HasColumnType("VARCHAR")
             .HasMaxLength(280);
 
         builder
-            .HasIndex(x => x.Token, "IX_URL_TOKEN")
+            .HasIndex(x => x.ShortCode, "IX_URL_TOKEN")
             .IsUnique();
     }
 }

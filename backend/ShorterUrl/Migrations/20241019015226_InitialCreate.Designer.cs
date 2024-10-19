@@ -12,7 +12,7 @@ using ShorterUrl.Data;
 namespace ShorterUrl.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241019012736_InitialCreate")]
+    [Migration("20241019015226_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -36,21 +36,21 @@ namespace ShorterUrl.Migrations
                         .HasColumnType("DATE")
                         .HasColumnName("expires_at");
 
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("VARCHAR")
-                        .HasColumnName("token");
-
-                    b.Property<string>("Url")
+                    b.Property<string>("OriginalUrl")
                         .IsRequired()
                         .HasMaxLength(280)
                         .HasColumnType("VARCHAR")
-                        .HasColumnName("long_url");
+                        .HasColumnName("original_url");
+
+                    b.Property<string>("ShortCode")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("short_code");
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "Token" }, "IX_URL_TOKEN")
+                    b.HasIndex(new[] { "ShortCode" }, "IX_URL_TOKEN")
                         .IsUnique();
 
                     b.ToTable("ShortUrl", (string)null);

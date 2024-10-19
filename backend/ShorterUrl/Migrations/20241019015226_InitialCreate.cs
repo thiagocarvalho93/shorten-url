@@ -17,8 +17,8 @@ namespace ShorterUrl.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    token = table.Column<string>(type: "VARCHAR", maxLength: 20, nullable: false),
-                    long_url = table.Column<string>(type: "VARCHAR", maxLength: 280, nullable: false),
+                    short_code = table.Column<string>(type: "VARCHAR", maxLength: 20, nullable: false),
+                    original_url = table.Column<string>(type: "VARCHAR", maxLength: 280, nullable: false),
                     created_at = table.Column<DateTime>(type: "DATE", nullable: false),
                     expires_at = table.Column<DateTime>(type: "DATE", nullable: false)
                 },
@@ -30,7 +30,7 @@ namespace ShorterUrl.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_URL_TOKEN",
                 table: "ShortUrl",
-                column: "token",
+                column: "short_code",
                 unique: true);
         }
 

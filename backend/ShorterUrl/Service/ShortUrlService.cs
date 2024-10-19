@@ -48,10 +48,10 @@ public class ShortUrlService
         ShortUrlDAO model = new()
         {
             Id = 0,
-            Token = token,
+            ShortCode = token,
             CreatedAt = DateTime.Now,
             ExpiresAt = DateTime.Now.AddDays(1),
-            Url = request.Url,
+            OriginalUrl = request.Url,
         };
 
         await _repository.AddAsync(model);
