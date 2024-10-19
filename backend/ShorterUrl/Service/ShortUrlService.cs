@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Caching.Memory;
 using ShorterUrl.DTOs;
+using ShorterUrl.Exceptions;
 using ShorterUrl.Models;
 using ShorterUrl.Repository;
 
@@ -53,7 +54,7 @@ public class ShortUrlService
         if (shortUrl is not null)
             return shortUrl;
 
-        throw new KeyNotFoundException();
+        throw new NotFoundException($"Token {token} not found.");
     }
 
     public async Task<ShortUrlDAO> InsertAsync(ShortUrlInsertRequestDTO request, CancellationToken cancellationToken = default)

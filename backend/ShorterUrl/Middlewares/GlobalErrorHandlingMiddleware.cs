@@ -1,5 +1,6 @@
 using System.Net;
 using System.Security.Authentication;
+using ShorterUrl.Exceptions;
 
 namespace ShorterUrl.Middlewares;
 
@@ -22,7 +23,7 @@ public class GlobalErrorHandlingMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            _logger.LogError("Error: {message}", ex.Message);
             await HandleExceptionAsync(context, ex);
         }
     }
@@ -30,7 +31,6 @@ public class GlobalErrorHandlingMiddleware
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         HttpStatusCode status;
-        string? stackTrace = string.Empty;
         string message;
 
         Type? exceptionType = exception.GetType();
@@ -39,33 +39,30 @@ public class GlobalErrorHandlingMiddleware
             exceptionType == typeof(DllNotFoundException) ||
             exceptionType == typeof(EntryPointNotFoundException) ||
             exceptionType == typeof(FileNotFoundException) ||
+            exceptionType == typeof(NotFoundException) ||
             exceptionType == typeof(KeyNotFoundException))
         {
             message = exception.Message;
             status = HttpStatusCode.NotFound;
-            stackTrace = exception.StackTrace;
         }
         else if (exceptionType == typeof(NotImplementedException))
         {
             status = HttpStatusCode.NotImplemented;
             message = exception.Message;
-            stackTrace = exception.StackTrace;
         }
         else if (exceptionType == typeof(UnauthorizedAccessException) ||
             exceptionType == typeof(AuthenticationException))
         {
             status = HttpStatusCode.Unauthorized;
             message = exception.Message;
-            stackTrace = exception.StackTrace;
         }
         else
         {
             status = HttpStatusCode.InternalServerError;
             message = exception.Message;
-            stackTrace = exception.StackTrace;
         }
 
-        string exceptionResult = System.Text.Json.JsonSerializer.Serialize(new { error = message, stackTrace });
+        string exceptionResult = System.Text.Json.JsonSerializer.Serialize(new { error = message, status });
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)status;
 
