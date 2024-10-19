@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using ShorterUrl.Data;
 using ShorterUrl.Jobs;
 using ShorterUrl.Middlewares;
@@ -25,6 +26,7 @@ app.UseCors(x => x
 
 app.UseMiddleware<GlobalErrorHandlingMiddleware>();
 app.UseHttpsRedirection();
+app.UseSerilogRequestLogging();
 app.UseAuthorization();
 app.MapControllers();
 
@@ -40,6 +42,9 @@ void ConfigureMvc(WebApplicationBuilder builder)
 void ConfigureServices(WebApplicationBuilder builder)
 {
     builder.Services.AddMemoryCache();
+    builder.Host.UseSerilog((context, loggerConfig) =>
+        loggerConfig.ReadFrom.Configuration(context.Configuration));
+
     var connectionString = builder.Configuration.GetConnectionString("Sqlite");
     Console.WriteLine($"Connection string: {connectionString}");
 
