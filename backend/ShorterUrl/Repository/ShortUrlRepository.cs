@@ -12,28 +12,28 @@ public class ShortUrlRepository
         _context = context;
     }
 
-    public async Task<List<ShortUrl>> GetPaginatedAsync(int page, int pageSize)
+    public async Task<List<ShortUrl>> GetPaginatedAsync(int page, int pageSize, CancellationToken cancellationToken = default)
     {
         return await _context.ShortenUrls
             .Skip(page * pageSize)
             .Take(pageSize)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<ShortUrl> GetByTokenAsync(string token)
+    public async Task<ShortUrl?> GetByTokenAsync(string token, CancellationToken cancellationToken = default)
     {
-        return await _context.ShortenUrls.FirstOrDefaultAsync(x => x.Token == token);
+        return await _context.ShortenUrls.FirstOrDefaultAsync(x => x.Token == token, cancellationToken);
     }
 
-    public async Task<ShortUrl> GetByUrlAsync(string url)
+    public async Task<ShortUrl?> GetByUrlAsync(string url, CancellationToken cancellationToken = default)
     {
-        return await _context.ShortenUrls.FirstOrDefaultAsync(x => x.Url == url);
+        return await _context.ShortenUrls.FirstOrDefaultAsync(x => x.Url == url, cancellationToken);
     }
 
-    public async Task<ShortUrl> AddAsync(ShortUrl model)
+    public async Task<ShortUrl> AddAsync(ShortUrl model, CancellationToken cancellationToken = default)
     {
         await _context.ShortenUrls.AddAsync(model);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         return model;
     }

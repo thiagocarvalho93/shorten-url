@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ShorterUrl.Data;
 using ShorterUrl.Repository;
+using ShorterUrl.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,13 +16,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// if (app.Environment.IsDevelopment())
-// {
 app.UseCors(x => x
         .AllowAnyOrigin()
         .AllowAnyMethod()
         .AllowAnyHeader());
-// }
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
@@ -43,4 +41,5 @@ void ConfigureServices(WebApplicationBuilder builder)
     Console.WriteLine($"Connection string: {connectionString}");
     builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
     builder.Services.AddTransient<ShortUrlRepository>();
+    builder.Services.AddTransient<ShorUrlService>();
 }

@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using ShorterUrl.DTOs;
-using ShorterUrl.Models;
-using ShorterUrl.Repository;
 using ShorterUrl.Service;
 
 namespace ShorterUrl.Controllers
@@ -10,21 +8,21 @@ namespace ShorterUrl.Controllers
     [ApiController]
     public class ShortenUrlController : ControllerBase
     {
-        private readonly ShortUrlRepository _repository;
+        private readonly ShorUrlService _service;
         private readonly IMemoryCache _cache;
 
-        public ShortenUrlController(ShortUrlRepository repository, IMemoryCache cache)
+        public ShortenUrlController(ShorUrlService service, IMemoryCache cache)
         {
-            _repository = repository;
+            _service = service;
             _cache = cache;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAsync([FromQuery] int page = 0, [FromQuery] int pageSize = 25)
+        [HttpGet("")]
+        public async Task<IActionResult> GetAsync([FromQuery] int page = 0, [FromQuery] int pageSize = 25, CancellationToken cancellationToken = default)
         {
             try
             {
-                var data = await _repository.GetPaginatedAsync(page, pageSize);
+                var data = await _service.GetPaginatedAsync(page, pageSize, cancellationToken);
                 return Ok(new { page, pageSize, data });
             }
             catch
@@ -34,16 +32,16 @@ namespace ShorterUrl.Controllers
         }
 
         [HttpGet("{token}")]
-        public async Task<IActionResult> RedirectByTokenAsync([FromRoute] string token)
+        public async Task<IActionResult> RedirectByTokenAsync([FromRoute] string token, CancellationToken cancellationToken = default)
         {
             try
             {
                 var entity = await _cache.GetOrCreateAsync(token, async entry =>
                 {
                     entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(2);
-                    return await _repository.GetByTokenAsync(token);
+                    return await _service.GetByTokenAsync(token, cancellationToken);
                 });
-                return entity is null ? NotFound() : Redirect(entity.Url);
+                return entity?.Url is null ? NotFound() : Redirect(entity.Url);
             }
             catch
             {
@@ -51,28 +49,14 @@ namespace ShorterUrl.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody] ShortUrlInsertRequestDTO dto)
+        [HttpPost("")]
+        public async Task<IActionResult> PostAsync([FromBody] ShortUrlInsertRequestDTO dto, CancellationToken cancellationToken = default)
         {
             try
             {
-                var entity = await _repository.GetByUrlAsync(dto.Url);
-                if (entity is not null)
-                    return Ok(entity);
+                var created = await _service.InsertAsync(dto, cancellationToken);
 
-                string token = RandomTokenService.GenerateRandomAlphanumericString();
-
-                ShortUrl model = new()
-                {
-                    Id = 0,
-                    Token = token,
-                    CreatedAt = DateTime.Now,
-                    ExpiresAt = DateTime.Now.AddDays(1),
-                    Url = dto.Url
-                };
-                await _repository.AddAsync(model);
-
-                return Created($"{token}", model);
+                return Created($"{created.Token}", created);
             }
             catch
             {
