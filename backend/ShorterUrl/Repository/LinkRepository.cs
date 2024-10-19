@@ -27,11 +27,11 @@ public class LinkRepository
             .ToArrayAsync(cancellationToken);
     }
 
-    public async Task<LinkModel?> GetByTokenAsync(string token, CancellationToken cancellationToken = default)
+    public async Task<LinkModel?> GetByShortCodeAsync(string shortCode, CancellationToken cancellationToken = default)
     {
         return await _context.Links
             .Include(x => x.Analytics)
-            .FirstOrDefaultAsync(x => x.ShortCode == token, cancellationToken);
+            .FirstOrDefaultAsync(x => x.ShortCode == shortCode, cancellationToken);
     }
 
     public async Task<LinkModel?> GetByIdAsync(int id, CancellationToken cancellationToken = default)

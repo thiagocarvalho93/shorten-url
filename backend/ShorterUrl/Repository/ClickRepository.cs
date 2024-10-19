@@ -4,16 +4,16 @@ using ShorterUrl.Models;
 
 namespace ShorterUrl.Repository
 {
-    public class AnalyticsRepository
+    public class ClickRepository
     {
         private readonly AppDbContext _context;
 
-        public AnalyticsRepository(AppDbContext context)
+        public ClickRepository(AppDbContext context)
         {
             _context = context;
         }
 
-        public async Task<AnalyticsModel> AddAsync(AnalyticsModel model, CancellationToken cancellationToken = default)
+        public async Task<ClickModel> AddAsync(ClickModel model, CancellationToken cancellationToken = default)
         {
             await _context.Analytics
                 .AddAsync(model, cancellationToken);
@@ -22,7 +22,7 @@ namespace ShorterUrl.Repository
             return model;
         }
 
-        public async Task<IEnumerable<AnalyticsModel>> AddAsync(IEnumerable<AnalyticsModel> model, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<ClickModel>> AddAsync(IEnumerable<ClickModel> model, CancellationToken cancellationToken = default)
         {
             await _context.Analytics
                 .AddRangeAsync(model, cancellationToken);
@@ -37,7 +37,7 @@ namespace ShorterUrl.Repository
                 .CountAsync(cancellationToken);
         }
 
-        public async Task<AnalyticsModel?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        public async Task<ClickModel?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             return await _context.Analytics.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
@@ -50,7 +50,7 @@ namespace ShorterUrl.Repository
                 .ToDictionaryAsync(x => x.Country, x => x.Count, cancellationToken);
         }
 
-        public async Task<IEnumerable<AnalyticsModel>> GetByLinkIdAsync(int linkId, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<ClickModel>> GetByLinkIdAsync(int linkId, CancellationToken cancellationToken = default)
         {
             return await _context.Analytics
                 .Where(x => x.LinkModel.Id == linkId)

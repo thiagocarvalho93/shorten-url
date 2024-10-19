@@ -11,12 +11,12 @@ namespace ShorterUrl.Service;
 public class LinkService
 {
     public readonly LinkRepository _urlRepository;
-    public readonly AnalyticsRepository _analyticsRepository;
+    public readonly ClickRepository _clickRepository;
     private readonly IMemoryCache _cache;
-    public LinkService(LinkRepository repository, AnalyticsRepository analyticsRepository, IMemoryCache cache)
+    public LinkService(LinkRepository repository, ClickRepository analyticsRepository, IMemoryCache cache)
     {
         _urlRepository = repository;
-        _analyticsRepository = analyticsRepository;
+        _clickRepository = analyticsRepository;
         _cache = cache;
     }
 
@@ -25,11 +25,11 @@ public class LinkService
         return await _urlRepository.GetPaginatedAsync(page, pageSize, cancellationToken);
     }
 
-    public async Task<LinkModel> RedirectByTokenAsync(string token, AnalyticsRequestDTO? analytics, CancellationToken cancellationToken = default)
+    public async Task<LinkModel> RedirectByShortCodeAsync(string shortCode, ClickRequestDTO? analytics, CancellationToken cancellationToken = default)
     {
-        var link = await GetByTokenAsync(token, cancellationToken);
+        var link = await GetByShortCodeAsync(shortCode, cancellationToken);
 
-        var analyticsDAO = new AnalyticsModel()
+        var analyticsDAO = new ClickModel()
         {
             LinkId = link.Id,
             ClickDate = DateTime.Now,
@@ -38,23 +38,23 @@ public class LinkService
             Referrer = analytics?.Referrer ?? "",
             UserAgent = analytics?.UserAgent ?? ""
         };
-        await _analyticsRepository.AddAsync(analyticsDAO, cancellationToken);
+        await _clickRepository.AddAsync(analyticsDAO, cancellationToken);
 
         return link;
     }
 
-    public async Task<LinkModel> GetByTokenAsync(string token, CancellationToken cancellationToken = default)
+    public async Task<LinkModel> GetByShortCodeAsync(string shortCode, CancellationToken cancellationToken = default)
     {
-        var link = await _cache.GetOrCreateAsync(token, async entry =>
+        var link = await _cache.GetOrCreateAsync(shortCode, async entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(2);
-            return await _urlRepository.GetByTokenAsync(token, cancellationToken);
+            return await _urlRepository.GetByShortCodeAsync(shortCode, cancellationToken);
         });
 
         if (link is not null)
             return link;
 
-        throw new NotFoundException($"Token {token} not found.");
+        throw new NotFoundException($"Short code {shortCode} not found.");
     }
 
     public async Task<LinkModel> InsertAsync(LinkInsertRequestDTO request, CancellationToken cancellationToken = default)
@@ -64,12 +64,12 @@ public class LinkService
         if (entity is not null)
             return entity;
 
-        string token = GenerateRandomAlphanumericString();
+        string shortCode = GenerateRandomAlphanumericString();
 
         LinkModel model = new()
         {
             Id = 0,
-            ShortCode = token,
+            ShortCode = shortCode,
             CreatedAt = DateTime.Now,
             ExpiresAt = DateTime.Now.AddDays(1),
             OriginalUrl = request.Url,

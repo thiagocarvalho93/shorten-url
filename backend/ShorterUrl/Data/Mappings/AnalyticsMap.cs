@@ -4,9 +4,9 @@ using ShorterUrl.Models;
 
 namespace ShorterUrl.Data.Mappings;
 
-public class AnalyticsMap : IEntityTypeConfiguration<AnalyticsModel>
+public class AnalyticsMap : IEntityTypeConfiguration<ClickModel>
 {
-    public void Configure(EntityTypeBuilder<AnalyticsModel> builder)
+    public void Configure(EntityTypeBuilder<ClickModel> builder)
     {
         builder.ToTable("Click");
 

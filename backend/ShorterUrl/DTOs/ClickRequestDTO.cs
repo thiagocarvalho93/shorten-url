@@ -1,14 +1,14 @@
 namespace ShorterUrl.DTOs;
 
-public sealed record AnalyticsRequestDTO
+public sealed record ClickRequestDTO
 {
     public string IpAdress { get; set; } = "";
     public string UserAgent { get; set; } = "";
     public string Location { get; set; } = "";
     public string Referrer { get; set; } = "";
 
-    public AnalyticsRequestDTO() { }
-    public AnalyticsRequestDTO(HttpContext httpContext)
+    public ClickRequestDTO() { }
+    public ClickRequestDTO(HttpContext httpContext)
     {
         IpAdress = httpContext.Connection?.RemoteIpAddress?.ToString() ?? "";
         UserAgent = httpContext.Request.Headers["User-Agent"].ToString();

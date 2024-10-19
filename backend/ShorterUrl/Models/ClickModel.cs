@@ -1,6 +1,6 @@
 namespace ShorterUrl.Models;
 
-public class AnalyticsModel
+public class ClickModel
 {
     public int Id { get; set; }
     public int LinkId { get; set; }

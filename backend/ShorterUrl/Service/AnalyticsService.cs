@@ -7,20 +7,20 @@ namespace ShorterUrl.Service
 {
     public class AnalyticsService
     {
-        private readonly AnalyticsRepository _analyticsRepository;
+        private readonly ClickRepository _clickRepository;
         private readonly LinkRepository _linkRepository;
 
-        public AnalyticsService(AnalyticsRepository analyticsRepository, LinkRepository linkRepository)
+        public AnalyticsService(ClickRepository analyticsRepository, LinkRepository linkRepository)
         {
-            _analyticsRepository = analyticsRepository;
+            _clickRepository = analyticsRepository;
             _linkRepository = linkRepository;
         }
 
         public async Task<GeneralAnalyticsResponseDTO> GetGeneralAnalytics(CancellationToken cancellationToken = default)
         {
-            var clicksCount = await _analyticsRepository.CountAsync(cancellationToken);
+            var clicksCount = await _clickRepository.CountAsync(cancellationToken);
             var urlCount = await _linkRepository.CountAsync(cancellationToken);
-            var clicksByLocations = await _analyticsRepository.GetLocations(cancellationToken);
+            var clicksByLocations = await _clickRepository.GetLocations(cancellationToken);
 
             return new GeneralAnalyticsResponseDTO
             {
@@ -30,9 +30,9 @@ namespace ShorterUrl.Service
             };
         }
 
-        public async Task<AnalyticsModel> GetById(int id, CancellationToken cancellationToken = default)
+        public async Task<ClickModel> GetById(int id, CancellationToken cancellationToken = default)
         {
-            var analytics = await _analyticsRepository.GetByIdAsync(id, cancellationToken);
+            var analytics = await _clickRepository.GetByIdAsync(id, cancellationToken);
 
             if (analytics is not null)
                 return analytics;
@@ -44,7 +44,7 @@ namespace ShorterUrl.Service
         {
             var link = await GetLinkById(linkId, cancellationToken);
 
-            var clickList = (await _analyticsRepository.GetByLinkIdAsync(linkId, cancellationToken)).ToList();
+            var clickList = (await _clickRepository.GetByLinkIdAsync(linkId, cancellationToken)).ToList();
 
             return new LinkAnalyticsResponseDTO
             {
@@ -61,7 +61,7 @@ namespace ShorterUrl.Service
         {
             await GetLinkById(linkId, cancellationToken);
 
-            return await _analyticsRepository.DeleteByLinkIdAsync(linkId, cancellationToken);
+            return await _clickRepository.DeleteByLinkIdAsync(linkId, cancellationToken);
         }
 
         private async Task<LinkModel> GetLinkById(int linkId, CancellationToken cancellationToken = default)

@@ -22,12 +22,12 @@ public class LinkController : ControllerBase
         return Ok(new { page, pageSize, data });
     }
 
-    [HttpGet("{token}")]
-    public async Task<IActionResult> RedirectByTokenAsync([FromRoute] string token, CancellationToken cancellationToken = default)
+    [HttpGet("{shortCode}")]
+    public async Task<IActionResult> RedirectByShortCodeAsync([FromRoute] string shortCode, CancellationToken cancellationToken = default)
     {
-        var analytics = new AnalyticsRequestDTO(HttpContext);
+        var analytics = new ClickRequestDTO(HttpContext);
 
-        var result = await _service.RedirectByTokenAsync(token, analytics, cancellationToken);
+        var result = await _service.RedirectByShortCodeAsync(shortCode, analytics, cancellationToken);
 
         return Redirect(result.OriginalUrl);
     }
