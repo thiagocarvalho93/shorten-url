@@ -9,36 +9,51 @@ namespace ShorterUrl.Service;
 
 public class ShortUrlService
 {
-    public readonly ShortUrlRepository _repository;
+    public readonly ShortUrlRepository _urlRepository;
+    public readonly AnalyticsRepository _analyticsRepository;
     private readonly IMemoryCache _cache;
-    public ShortUrlService(ShortUrlRepository repository, IMemoryCache cache)
+    public ShortUrlService(ShortUrlRepository repository, AnalyticsRepository analyticsRepository, IMemoryCache cache)
     {
-        _repository = repository;
+        _urlRepository = repository;
+        _analyticsRepository = analyticsRepository;
         _cache = cache;
     }
 
     public async Task<List<ShortUrlDAO>> GetPaginatedAsync(int page, int pageSize, CancellationToken cancellationToken = default)
     {
-        return await _repository.GetPaginatedAsync(page, pageSize, cancellationToken);
+        return await _urlRepository.GetPaginatedAsync(page, pageSize, cancellationToken);
     }
 
-    public async Task<ShortUrlDAO> GetByTokenAsync(string token, CancellationToken cancellationToken = default)
+    public async Task<ShortUrlDAO> GetByTokenAsync(string token, AnalyticsRequestDTO? analytics = null, CancellationToken cancellationToken = default)
     {
-        var entity = await _cache.GetOrCreateAsync(token, async entry =>
+        var shortUrl = await _cache.GetOrCreateAsync(token, async entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(2);
-            return await _repository.GetByTokenAsync(token, cancellationToken);
+            return await _urlRepository.GetByTokenAsync(token, cancellationToken);
         });
 
-        if (entity is not null)
-            return entity;
+        if (shortUrl is not null)
+        {
+            var analyticsDAO = new AnalyticsDAO()
+            {
+                ShortUrlId = shortUrl.Id,
+                ClickDate = DateTime.Now,
+                IpAdress = analytics?.IpAdress ?? "",
+                Location = analytics?.Location ?? "",
+                Referrer = analytics?.Referrer ?? "",
+                UserAgent = analytics?.UserAgent ?? ""
+            };
+            await _analyticsRepository.AddAsync(analyticsDAO);
+
+            return shortUrl;
+        }
 
         throw new KeyNotFoundException();
     }
 
     public async Task<ShortUrlDAO> InsertAsync(ShortUrlInsertRequestDTO request, CancellationToken cancellationToken = default)
     {
-        var entity = await _repository.GetByUrlAsync(request.Url, cancellationToken);
+        var entity = await _urlRepository.GetByUrlAsync(request.Url, cancellationToken);
 
         if (entity is not null)
             return entity;
@@ -54,7 +69,7 @@ public class ShortUrlService
             OriginalUrl = request.Url,
         };
 
-        await _repository.AddAsync(model);
+        await _urlRepository.AddAsync(model);
 
         return model;
     }

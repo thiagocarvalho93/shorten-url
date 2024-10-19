@@ -41,5 +41,10 @@ public class ShortUrlMap : IEntityTypeConfiguration<ShortUrlDAO>
         builder
             .HasIndex(x => x.ShortCode, "IX_URL_TOKEN")
             .IsUnique();
+
+        builder.HasMany(s => s.Analytics)
+            .WithOne(a => a.ShortUrlDAO)
+            .HasForeignKey(a => a.ShortUrlId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

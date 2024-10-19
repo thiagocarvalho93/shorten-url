@@ -3,6 +3,7 @@ namespace ShorterUrl.Models;
 public class AnalyticsDAO
 {
     public int Id { get; set; }
+    public int ShortUrlId { get; set; }
     public ShortUrlDAO ShortUrlDAO { get; set; }
     public DateTime ClickDate { get; set; } = DateTime.Now;
     public string IpAdress { get; set; }

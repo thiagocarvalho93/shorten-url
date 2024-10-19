@@ -7,4 +7,5 @@ public class ShortUrlDAO
     public string OriginalUrl { get; set; } = "";
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime ExpiresAt { get; set; }
+    public List<AnalyticsDAO> Analytics { get; set; } = new();
 }

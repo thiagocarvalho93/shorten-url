@@ -44,5 +44,6 @@ void ConfigureServices(WebApplicationBuilder builder)
 
     builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite($"Data Source=database.db"));
     builder.Services.AddTransient<ShortUrlRepository>();
+    builder.Services.AddTransient<AnalyticsRepository>();
     builder.Services.AddTransient<ShortUrlService>();
 }
