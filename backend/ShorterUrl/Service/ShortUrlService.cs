@@ -22,7 +22,7 @@ public class ShortUrlService
         return await _repository.GetPaginatedAsync(page, pageSize, cancellationToken);
     }
 
-    public async Task<ShortUrlDAO?> GetByTokenAsync(string token, CancellationToken cancellationToken = default)
+    public async Task<ShortUrlDAO> GetByTokenAsync(string token, CancellationToken cancellationToken = default)
     {
         var entity = await _cache.GetOrCreateAsync(token, async entry =>
         {
@@ -30,7 +30,7 @@ public class ShortUrlService
             return await _repository.GetByTokenAsync(token, cancellationToken);
         });
 
-        return null;
+        throw new KeyNotFoundException();
     }
 
     public async Task<ShortUrlDAO> InsertAsync(ShortUrlInsertRequestDTO request, CancellationToken cancellationToken = default)
@@ -48,7 +48,7 @@ public class ShortUrlService
             Token = token,
             CreatedAt = DateTime.Now,
             ExpiresAt = DateTime.Now.AddDays(1),
-            Url = entity?.Url
+            Url = entity?.Url ?? "",
         };
 
         await _repository.AddAsync(model);
