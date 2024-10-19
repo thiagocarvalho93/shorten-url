@@ -20,12 +20,12 @@ public class ShortUrlRepository
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<ShortUrl?> GetByTokenAsync(string token, CancellationToken cancellationToken = default)
+    public async Task<ShortUrl?> GetByTokenAsync(string? token, CancellationToken cancellationToken = default)
     {
         return await _context.ShortenUrls.FirstOrDefaultAsync(x => x.Token == token, cancellationToken);
     }
 
-    public async Task<ShortUrl?> GetByUrlAsync(string url, CancellationToken cancellationToken = default)
+    public async Task<ShortUrl?> GetByUrlAsync(string? url, CancellationToken cancellationToken = default)
     {
         return await _context.ShortenUrls.FirstOrDefaultAsync(x => x.Url == url, cancellationToken);
     }

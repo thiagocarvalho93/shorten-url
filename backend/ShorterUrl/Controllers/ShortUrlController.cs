@@ -1,20 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using ShorterUrl.DTOs;
 using ShorterUrl.Service;
 
 namespace ShorterUrl.Controllers
 {
     [ApiController]
-    public class ShortenUrlController : ControllerBase
+    public class ShortUrlController : ControllerBase
     {
-        private readonly ShorUrlService _service;
-        private readonly IMemoryCache _cache;
+        private readonly ShortUrlService _service;
 
-        public ShortenUrlController(ShorUrlService service, IMemoryCache cache)
+        public ShortUrlController(ShortUrlService service)
         {
             _service = service;
-            _cache = cache;
         }
 
         [HttpGet("")]
@@ -36,12 +33,9 @@ namespace ShorterUrl.Controllers
         {
             try
             {
-                var entity = await _cache.GetOrCreateAsync(token, async entry =>
-                {
-                    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(2);
-                    return await _service.GetByTokenAsync(token, cancellationToken);
-                });
-                return entity?.Url is null ? NotFound() : Redirect(entity.Url);
+                var result = await _service.GetByTokenAsync(token, cancellationToken);
+
+                return result?.Url is null ? NotFound() : Redirect(result.Url);
             }
             catch
             {
@@ -63,6 +57,5 @@ namespace ShorterUrl.Controllers
                 return StatusCode(500, "Erro 5X0003");
             }
         }
-
     }
 }
