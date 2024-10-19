@@ -12,6 +12,7 @@ public class LinkRepository
         _context = context;
     }
 
+    #region Get
     public async Task<List<LinkModel>> GetPaginatedAsync(int page, int pageSize, CancellationToken cancellationToken = default)
     {
         return await _context.Links
@@ -51,7 +52,9 @@ public class LinkRepository
         return await _context.Links
             .CountAsync(cancellationToken);
     }
+    #endregion
 
+    #region Insert
     public async Task<LinkModel> AddAsync(LinkModel model, CancellationToken cancellationToken = default)
     {
         await _context.Links.AddAsync(model, cancellationToken);
@@ -67,4 +70,34 @@ public class LinkRepository
 
         return model;
     }
+    #endregion
+
+    #region Delete
+    public async Task<int> DeleteByIdAsync(int id, CancellationToken cancellationToken = default)
+    {
+        var count = await _context.Links
+            .Where(x => x.Id == id)
+            .ExecuteDeleteAsync(cancellationToken);
+
+        return count;
+    }
+
+    public async Task<int> DeleteByShortCodeAsync(string shortCode, CancellationToken cancellationToken = default)
+    {
+        var count = await _context.Links
+            .Where(x => x.ShortCode == shortCode)
+            .ExecuteDeleteAsync(cancellationToken);
+
+        return count;
+    }
+
+    public async Task<int> DeleteAllAsync(int id, CancellationToken cancellationToken = default)
+    {
+        var count = await _context.Links
+            .ExecuteDeleteAsync(cancellationToken);
+
+        return count;
+    }
+
+    #endregion
 }

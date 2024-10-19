@@ -10,19 +10,20 @@ namespace ShorterUrl.Service;
 
 public class LinkService
 {
-    public readonly LinkRepository _urlRepository;
+    public readonly LinkRepository _linkRepository;
     public readonly ClickRepository _clickRepository;
     private readonly IMemoryCache _cache;
-    public LinkService(LinkRepository repository, ClickRepository analyticsRepository, IMemoryCache cache)
+
+    public LinkService(LinkRepository linkRepository, ClickRepository clickRepository, IMemoryCache cache)
     {
-        _urlRepository = repository;
-        _clickRepository = analyticsRepository;
+        _linkRepository = linkRepository;
+        _clickRepository = clickRepository;
         _cache = cache;
     }
 
     public async Task<List<LinkModel>> GetPaginatedAsync(int page, int pageSize, CancellationToken cancellationToken = default)
     {
-        return await _urlRepository.GetPaginatedAsync(page, pageSize, cancellationToken);
+        return await _linkRepository.GetPaginatedAsync(page, pageSize, cancellationToken);
     }
 
     public async Task<LinkModel> RedirectByShortCodeAsync(string shortCode, ClickRequestDTO? analytics, CancellationToken cancellationToken = default)
@@ -48,7 +49,7 @@ public class LinkService
         var link = await _cache.GetOrCreateAsync(shortCode, async entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(2);
-            return await _urlRepository.GetByShortCodeAsync(shortCode, cancellationToken);
+            return await _linkRepository.GetByShortCodeAsync(shortCode, cancellationToken);
         });
 
         if (link is not null)
@@ -59,7 +60,7 @@ public class LinkService
 
     public async Task<LinkModel> InsertAsync(LinkInsertRequestDTO request, CancellationToken cancellationToken = default)
     {
-        var entity = await _urlRepository.GetByUrlAsync(request.Url, cancellationToken);
+        var entity = await _linkRepository.GetByUrlAsync(request.Url, cancellationToken);
 
         if (entity is not null)
             return entity;
@@ -75,9 +76,25 @@ public class LinkService
             OriginalUrl = request.Url,
         };
 
-        await _urlRepository.AddAsync(model, cancellationToken);
+        await _linkRepository.AddAsync(model, cancellationToken);
 
         return model;
+    }
+
+    public async Task DeleteByIdAsync(int id, CancellationToken cancellationToken = default)
+    {
+        var deleteCount = await _linkRepository.DeleteByIdAsync(id, cancellationToken);
+
+        if (deleteCount == 0)
+            throw new NotFoundException($"Link with id {id} not found.");
+    }
+
+    public async Task DeleteByShortCodeAsync(string shortCode, CancellationToken cancellationToken = default)
+    {
+        var deleteCount = await _linkRepository.DeleteByShortCodeAsync(shortCode, cancellationToken);
+
+        if (deleteCount == 0)
+            throw new NotFoundException($"Link with short code {shortCode} not found.");
     }
 
     private static string GenerateRandomAlphanumericString(int size = 5)

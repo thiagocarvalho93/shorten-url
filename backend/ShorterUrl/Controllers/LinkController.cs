@@ -39,4 +39,20 @@ public class LinkController : ControllerBase
 
         return Created($"{created.ShortCode}", created);
     }
+
+    [HttpDelete("id/{id}")]
+    public async Task<IActionResult> DeleteByIdAsync([FromRoute] int id, CancellationToken cancellationToken = default)
+    {
+        await _service.DeleteByIdAsync(id, cancellationToken);
+
+        return NoContent();
+    }
+
+    [HttpDelete("{shortCode}")]
+    public async Task<IActionResult> DeleteByShortCodeAsync([FromRoute] string shortCode, CancellationToken cancellationToken = default)
+    {
+        await _service.DeleteByShortCodeAsync(shortCode, cancellationToken);
+
+        return NoContent();
+    }
 }
