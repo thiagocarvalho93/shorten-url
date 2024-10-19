@@ -38,7 +38,7 @@ public class ShortUrlService
             Referrer = analytics?.Referrer ?? "",
             UserAgent = analytics?.UserAgent ?? ""
         };
-        await _analyticsRepository.AddAsync(analyticsDAO);
+        await _analyticsRepository.AddAsync(analyticsDAO, cancellationToken);
 
         return shortUrl;
     }
@@ -75,7 +75,7 @@ public class ShortUrlService
             OriginalUrl = request.Url,
         };
 
-        await _urlRepository.AddAsync(model);
+        await _urlRepository.AddAsync(model, cancellationToken);
 
         return model;
     }

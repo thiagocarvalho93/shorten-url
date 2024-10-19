@@ -55,6 +55,7 @@ void ConfigureServices(WebApplicationBuilder builder)
     builder.Services.AddTransient<ShortUrlRepository>();
     builder.Services.AddTransient<AnalyticsRepository>();
     builder.Services.AddTransient<ShortUrlService>();
+    builder.Services.AddTransient<AnalyticsService>();
     builder.Services.AddTransient<FakeDataService>();
     builder.Services.AddHostedService<GenerateFakeDataJob>();
 }

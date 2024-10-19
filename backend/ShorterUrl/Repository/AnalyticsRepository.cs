@@ -16,7 +16,7 @@ namespace ShorterUrl.Repository
         public async Task<AnalyticsDAO> AddAsync(AnalyticsDAO model, CancellationToken cancellationToken = default)
         {
             await _context.Analytics
-                .AddAsync(model);
+                .AddAsync(model, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
             return model;
@@ -25,7 +25,7 @@ namespace ShorterUrl.Repository
         public async Task<IEnumerable<AnalyticsDAO>> AddAsync(IEnumerable<AnalyticsDAO> model, CancellationToken cancellationToken = default)
         {
             await _context.Analytics
-                .AddRangeAsync(model);
+                .AddRangeAsync(model, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
             return model;
@@ -37,16 +37,23 @@ namespace ShorterUrl.Repository
                 .CountAsync(cancellationToken);
         }
 
-        public async Task<AnalyticsDAO?> GetById(int id, CancellationToken cancellationToken = default)
+        public async Task<AnalyticsDAO?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             return await _context.Analytics.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
 
-        public async Task<IEnumerable<AnalyticsDAO>> GetByLinkId(int linkId, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<AnalyticsDAO>> GetByLinkIdAsync(int linkId, CancellationToken cancellationToken = default)
         {
             return await _context.Analytics
                 .Where(x => x.ShortUrlDAO.Id == linkId)
                 .ToListAsync(cancellationToken);
+        }
+
+        public async Task<int> DeleteByLinkIdAsync(int linkId, CancellationToken cancellationToken = default)
+        {
+            return await _context.Analytics
+                .Where(x => x.ShortUrlDAO.Id == linkId)
+                .ExecuteDeleteAsync(cancellationToken);
         }
     }
 }

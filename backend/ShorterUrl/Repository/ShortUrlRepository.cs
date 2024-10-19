@@ -20,7 +20,7 @@ public class ShortUrlRepository
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<int[]> GetAllIds(CancellationToken cancellationToken = default)
+    public async Task<int[]> GetAllIdsAsync(CancellationToken cancellationToken = default)
     {
         return await _context.ShortUrls
             .Select(x => x.Id)
@@ -32,6 +32,13 @@ public class ShortUrlRepository
         return await _context.ShortUrls
             .Include(x => x.Analytics)
             .FirstOrDefaultAsync(x => x.ShortCode == token, cancellationToken);
+    }
+
+    public async Task<ShortUrlDAO?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+    {
+        return await _context.ShortUrls
+            .Include(x => x.Analytics)
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
     public async Task<ShortUrlDAO?> GetByUrlAsync(string? url, CancellationToken cancellationToken = default)
@@ -47,7 +54,7 @@ public class ShortUrlRepository
 
     public async Task<ShortUrlDAO> AddAsync(ShortUrlDAO model, CancellationToken cancellationToken = default)
     {
-        await _context.ShortUrls.AddAsync(model);
+        await _context.ShortUrls.AddAsync(model, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 
         return model;
@@ -55,7 +62,7 @@ public class ShortUrlRepository
 
     public async Task<IEnumerable<ShortUrlDAO>> AddAsync(IEnumerable<ShortUrlDAO> model, CancellationToken cancellationToken = default)
     {
-        await _context.ShortUrls.AddRangeAsync(model);
+        await _context.ShortUrls.AddRangeAsync(model, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 
         return model;

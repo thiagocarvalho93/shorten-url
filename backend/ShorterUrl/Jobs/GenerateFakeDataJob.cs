@@ -42,7 +42,7 @@ public class GenerateFakeDataJob : IHostedService
         if (count < threshold)
         {
             _logger.LogInformation("Generating fake analytics...");
-            var possibleIds = await shortUrlRepository.GetAllIds(cancellationToken);
+            var possibleIds = await shortUrlRepository.GetAllIdsAsync(cancellationToken);
 
             var fakeAnalytics = _fakeDataService.GenerateAnalyticsDAO(threshold - count, possibleIds);
             await analyticsRepository.AddAsync(fakeAnalytics, cancellationToken);

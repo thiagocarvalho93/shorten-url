@@ -32,14 +32,6 @@ public class ShortUrlController : ControllerBase
         return Redirect(result.OriginalUrl);
     }
 
-    [HttpGet("analytics/{token}")]
-    public async Task<IActionResult> GetAnalyticsByTokenAsync([FromRoute] string token, CancellationToken cancellationToken = default)
-    {
-        var result = await _service.GetByTokenAsync(token, cancellationToken);
-
-        return Ok(result);
-    }
-
     [HttpPost("")]
     public async Task<IActionResult> PostAsync([FromBody] ShortUrlInsertRequestDTO dto, CancellationToken cancellationToken = default)
     {
