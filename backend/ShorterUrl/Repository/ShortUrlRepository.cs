@@ -22,7 +22,9 @@ public class ShortUrlRepository
 
     public async Task<ShortUrlDAO?> GetByTokenAsync(string token, CancellationToken cancellationToken = default)
     {
-        return await _context.ShortUrls.FirstOrDefaultAsync(x => x.ShortCode == token, cancellationToken);
+        return await _context.ShortUrls
+            .Include(x => x.Analytics)
+            .FirstOrDefaultAsync(x => x.ShortCode == token, cancellationToken);
     }
 
     public async Task<ShortUrlDAO?> GetByUrlAsync(string? url, CancellationToken cancellationToken = default)

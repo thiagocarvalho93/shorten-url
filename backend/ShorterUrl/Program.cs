@@ -39,10 +39,10 @@ void ConfigureMvc(WebApplicationBuilder builder)
 void ConfigureServices(WebApplicationBuilder builder)
 {
     builder.Services.AddMemoryCache();
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    var connectionString = builder.Configuration.GetConnectionString("Sqlite");
     Console.WriteLine($"Connection string: {connectionString}");
 
-    builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite($"Data Source=database.db"));
+    builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(connectionString));
     builder.Services.AddTransient<ShortUrlRepository>();
     builder.Services.AddTransient<AnalyticsRepository>();
     builder.Services.AddTransient<ShortUrlService>();

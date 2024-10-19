@@ -24,7 +24,25 @@ public class ShortUrlService
         return await _urlRepository.GetPaginatedAsync(page, pageSize, cancellationToken);
     }
 
-    public async Task<ShortUrlDAO> GetByTokenAsync(string token, AnalyticsRequestDTO? analytics = null, CancellationToken cancellationToken = default)
+    public async Task<ShortUrlDAO> RedirectByTokenAsync(string token, AnalyticsRequestDTO? analytics = null, CancellationToken cancellationToken = default)
+    {
+        var shortUrl = await GetByTokenAsync(token, cancellationToken);
+
+        var analyticsDAO = new AnalyticsDAO()
+        {
+            ShortUrlId = shortUrl.Id,
+            ClickDate = DateTime.Now,
+            IpAdress = analytics?.IpAdress ?? "",
+            Location = analytics?.Location ?? "",
+            Referrer = analytics?.Referrer ?? "",
+            UserAgent = analytics?.UserAgent ?? ""
+        };
+        await _analyticsRepository.AddAsync(analyticsDAO);
+
+        return shortUrl;
+    }
+
+    public async Task<ShortUrlDAO> GetByTokenAsync(string token, CancellationToken cancellationToken = default)
     {
         var shortUrl = await _cache.GetOrCreateAsync(token, async entry =>
         {
@@ -33,20 +51,7 @@ public class ShortUrlService
         });
 
         if (shortUrl is not null)
-        {
-            var analyticsDAO = new AnalyticsDAO()
-            {
-                ShortUrlId = shortUrl.Id,
-                ClickDate = DateTime.Now,
-                IpAdress = analytics?.IpAdress ?? "",
-                Location = analytics?.Location ?? "",
-                Referrer = analytics?.Referrer ?? "",
-                UserAgent = analytics?.UserAgent ?? ""
-            };
-            await _analyticsRepository.AddAsync(analyticsDAO);
-
             return shortUrl;
-        }
 
         throw new KeyNotFoundException();
     }
