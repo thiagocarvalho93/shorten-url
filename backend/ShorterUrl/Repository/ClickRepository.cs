@@ -53,14 +53,14 @@ namespace ShorterUrl.Repository
         public async Task<IEnumerable<ClickModel>> GetByLinkIdAsync(int linkId, CancellationToken cancellationToken = default)
         {
             return await _context.Analytics
-                .Where(x => x.LinkModel.Id == linkId)
+                .Where(x => x.Link.Id == linkId)
                 .ToListAsync(cancellationToken);
         }
 
         public async Task<int> DeleteByLinkIdAsync(int linkId, CancellationToken cancellationToken = default)
         {
             return await _context.Analytics
-                .Where(x => x.LinkModel.Id == linkId)
+                .Where(x => x.Link.Id == linkId)
                 .ExecuteDeleteAsync(cancellationToken);
         }
     }

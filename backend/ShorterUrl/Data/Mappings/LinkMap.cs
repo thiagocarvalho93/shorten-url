@@ -42,8 +42,8 @@ public class LinkMap : IEntityTypeConfiguration<LinkModel>
             .HasIndex(x => x.ShortCode, "IX_URL_TOKEN")
             .IsUnique();
 
-        builder.HasMany(s => s.Analytics)
-            .WithOne(a => a.LinkModel)
+        builder.HasMany(s => s.Clicks)
+            .WithOne(a => a.Link)
             .HasForeignKey(a => a.LinkId)
             .OnDelete(DeleteBehavior.Cascade);
     }

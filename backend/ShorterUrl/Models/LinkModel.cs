@@ -7,5 +7,5 @@ public class LinkModel
     public string OriginalUrl { get; set; } = "";
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime ExpiresAt { get; set; }
-    public List<ClickModel> Analytics { get; set; } = new();
+    public List<ClickModel> Clicks { get; set; } = new();
 }

@@ -32,7 +32,7 @@ public class AnalyticsMap : IEntityTypeConfiguration<ClickModel>
             .IsRequired()
             .HasDefaultValueSql("GETDATE()");
 
-        builder.HasOne(a => a.LinkModel)
+        builder.HasOne(a => a.Link)
             .WithMany()
             .HasForeignKey("LinkId")
             .OnDelete(DeleteBehavior.Cascade);
