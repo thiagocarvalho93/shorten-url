@@ -20,6 +20,13 @@ public class ShortUrlRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<int[]> GetAllIds(CancellationToken cancellationToken = default)
+    {
+        return await _context.ShortUrls
+            .Select(x => x.Id)
+            .ToArrayAsync(cancellationToken);
+    }
+
     public async Task<ShortUrlDAO?> GetByTokenAsync(string token, CancellationToken cancellationToken = default)
     {
         return await _context.ShortUrls
@@ -30,6 +37,12 @@ public class ShortUrlRepository
     public async Task<ShortUrlDAO?> GetByUrlAsync(string? url, CancellationToken cancellationToken = default)
     {
         return await _context.ShortUrls.FirstOrDefaultAsync(x => x.OriginalUrl == url, cancellationToken);
+    }
+
+    public async Task<int> CountAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.ShortUrls
+            .CountAsync(cancellationToken);
     }
 
     public async Task<ShortUrlDAO> AddAsync(ShortUrlDAO model, CancellationToken cancellationToken = default)

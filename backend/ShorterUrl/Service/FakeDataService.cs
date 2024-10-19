@@ -6,16 +6,28 @@ namespace ShorterUrl.Service;
 public class FakeDataService
 {
     private readonly Faker<ShortUrlDAO> shortUrlFake;
+    private readonly Faker<AnalyticsDAO> analyticsFake;
 
     public FakeDataService()
     {
-        Randomizer.Seed = new Random(123);
         shortUrlFake = SetupShortUrlFake();
+        analyticsFake = new Faker<AnalyticsDAO>()
+            .RuleFor(x => x.ClickDate, f => f.Date.Recent())
+            .RuleFor(x => x.UserAgent, f => f.Internet.UserAgent())
+            .RuleFor(x => x.IpAdress, f => f.Internet.Ip())
+            .RuleFor(x => x.Referrer, f => f.Internet.Url())
+            .RuleFor(x => x.Location, x => x.Address.Country());
     }
 
     public IEnumerable<ShortUrlDAO> GenerateShortUrlDAO(int Length)
     {
         return shortUrlFake.Generate(Length);
+    }
+
+    public IEnumerable<AnalyticsDAO> GenerateAnalyticsDAO(int Length, int[] possibleShortUrlIds)
+    {
+        analyticsFake.RuleFor(x => x.ShortUrlId, f => f.PickRandomParam(possibleShortUrlIds));
+        return analyticsFake.Generate(Length);
     }
 
     private static Faker<ShortUrlDAO> SetupShortUrlFake()

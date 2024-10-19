@@ -15,10 +15,26 @@ namespace ShorterUrl.Repository
 
         public async Task<AnalyticsDAO> AddAsync(AnalyticsDAO model, CancellationToken cancellationToken = default)
         {
-            await _context.Analytics.AddAsync(model);
+            await _context.Analytics
+                .AddAsync(model);
             await _context.SaveChangesAsync(cancellationToken);
 
             return model;
+        }
+
+        public async Task<IEnumerable<AnalyticsDAO>> AddAsync(IEnumerable<AnalyticsDAO> model, CancellationToken cancellationToken = default)
+        {
+            await _context.Analytics
+                .AddRangeAsync(model);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return model;
+        }
+
+        public async Task<int> CountAsync(CancellationToken cancellationToken = default)
+        {
+            return await _context.Analytics
+                .CountAsync(cancellationToken);
         }
 
         public async Task<AnalyticsDAO?> GetById(int id, CancellationToken cancellationToken = default)
