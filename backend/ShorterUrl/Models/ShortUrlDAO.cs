@@ -1,6 +1,6 @@
 namespace ShorterUrl.Models;
 
-public class ShortUrl
+public class ShortUrlDAO
 {
     public int Id { get; set; }
     public string? Token { get; set; }

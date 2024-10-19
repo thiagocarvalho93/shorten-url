@@ -1,10 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ShorterUrl.DTOs
+namespace ShorterUrl.DTOs;
+
+public class ShortUrlInsertRequestDTO
 {
-    public class ShortUrlInsertRequestDTO
-    {
-        [Required(ErrorMessage = "url is required")]
-        public string? Url { get; set; }
-    }
+    [Required(ErrorMessage = "url is required")]
+    public string? Url { get; set; }
 }

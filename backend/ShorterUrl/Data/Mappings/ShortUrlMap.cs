@@ -4,9 +4,9 @@ using ShorterUrl.Models;
 
 namespace ShorterUrl.Data.Mappings;
 
-public class ShortenUrlMap : IEntityTypeConfiguration<ShortUrl>
+public class ShortUrlMap : IEntityTypeConfiguration<ShortUrlDAO>
 {
-    public void Configure(EntityTypeBuilder<ShortUrl> builder)
+    public void Configure(EntityTypeBuilder<ShortUrlDAO> builder)
     {
         builder.ToTable("ShortUrl");
 

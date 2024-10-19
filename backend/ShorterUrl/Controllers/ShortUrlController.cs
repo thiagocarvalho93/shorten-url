@@ -2,60 +2,59 @@ using Microsoft.AspNetCore.Mvc;
 using ShorterUrl.DTOs;
 using ShorterUrl.Service;
 
-namespace ShorterUrl.Controllers
+namespace ShorterUrl.Controllers;
+
+[ApiController]
+public class ShortUrlController : ControllerBase
 {
-    [ApiController]
-    public class ShortUrlController : ControllerBase
+    private readonly ShortUrlService _service;
+
+    public ShortUrlController(ShortUrlService service)
     {
-        private readonly ShortUrlService _service;
+        _service = service;
+    }
 
-        public ShortUrlController(ShortUrlService service)
+    [HttpGet("")]
+    public async Task<IActionResult> GetAsync([FromQuery] int page = 0, [FromQuery] int pageSize = 25, CancellationToken cancellationToken = default)
+    {
+        try
         {
-            _service = service;
+            var data = await _service.GetPaginatedAsync(page, pageSize, cancellationToken);
+            return Ok(new { page, pageSize, data });
         }
-
-        [HttpGet("")]
-        public async Task<IActionResult> GetAsync([FromQuery] int page = 0, [FromQuery] int pageSize = 25, CancellationToken cancellationToken = default)
+        catch
         {
-            try
-            {
-                var data = await _service.GetPaginatedAsync(page, pageSize, cancellationToken);
-                return Ok(new { page, pageSize, data });
-            }
-            catch
-            {
-                return StatusCode(500, "Erro 5X0001");
-            }
+            return StatusCode(500, "Erro 5X0001");
         }
+    }
 
-        [HttpGet("{token}")]
-        public async Task<IActionResult> RedirectByTokenAsync([FromRoute] string token, CancellationToken cancellationToken = default)
+    [HttpGet("{token}")]
+    public async Task<IActionResult> RedirectByTokenAsync([FromRoute] string token, CancellationToken cancellationToken = default)
+    {
+        try
         {
-            try
-            {
-                var result = await _service.GetByTokenAsync(token, cancellationToken);
+            var result = await _service.GetByTokenAsync(token, cancellationToken);
 
-                return result?.Url is null ? NotFound() : Redirect(result.Url);
-            }
-            catch
-            {
-                return StatusCode(500, "Erro 5X0002");
-            }
+            return result?.Url is null ? NotFound() : Redirect(result.Url);
         }
-
-        [HttpPost("")]
-        public async Task<IActionResult> PostAsync([FromBody] ShortUrlInsertRequestDTO dto, CancellationToken cancellationToken = default)
+        catch
         {
-            try
-            {
-                var created = await _service.InsertAsync(dto, cancellationToken);
+            return StatusCode(500, "Erro 5X0002");
+        }
+    }
 
-                return Created($"{created.Token}", created);
-            }
-            catch
-            {
-                return StatusCode(500, "Erro 5X0003");
-            }
+    [HttpPost("")]
+    public async Task<IActionResult> PostAsync([FromBody] ShortUrlInsertRequestDTO dto, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var created = await _service.InsertAsync(dto, cancellationToken);
+
+            return Created($"{created.Token}", created);
+        }
+        catch
+        {
+            return StatusCode(500, "Erro 5X0003");
         }
     }
 }
