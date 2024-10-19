@@ -30,6 +30,9 @@ public class ShortUrlService
             return await _repository.GetByTokenAsync(token, cancellationToken);
         });
 
+        if (entity is not null)
+            return entity;
+
         throw new KeyNotFoundException();
     }
 
@@ -48,7 +51,7 @@ public class ShortUrlService
             Token = token,
             CreatedAt = DateTime.Now,
             ExpiresAt = DateTime.Now.AddDays(1),
-            Url = entity?.Url ?? "",
+            Url = request.Url,
         };
 
         await _repository.AddAsync(model);

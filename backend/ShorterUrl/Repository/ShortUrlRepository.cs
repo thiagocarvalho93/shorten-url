@@ -20,7 +20,7 @@ public class ShortUrlRepository
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<ShortUrlDAO?> GetByTokenAsync(string? token, CancellationToken cancellationToken = default)
+    public async Task<ShortUrlDAO?> GetByTokenAsync(string token, CancellationToken cancellationToken = default)
     {
         return await _context.ShortUrls.FirstOrDefaultAsync(x => x.Token == token, cancellationToken);
     }
