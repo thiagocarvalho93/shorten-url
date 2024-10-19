@@ -16,6 +16,20 @@ namespace ShorterUrl.Service
             _shortUrlRepository = shortUrlRepository;
         }
 
+        public async Task<AnalyticsOverallResponseDTO> GetOverall(CancellationToken cancellationToken = default)
+        {
+            var clicksCount = await _analyticsRepository.CountAsync(cancellationToken);
+            var urlCount = await _shortUrlRepository.CountAsync(cancellationToken);
+            var clicksByLocations = await _analyticsRepository.GetLocations(cancellationToken);
+
+            return new AnalyticsOverallResponseDTO
+            {
+                TotalClicks = clicksCount,
+                TotalUrls = urlCount,
+                ClicksByLocations = clicksByLocations
+            };
+        }
+
         public async Task<AnalyticsDAO> GetById(int id, CancellationToken cancellationToken = default)
         {
             var analytics = await _analyticsRepository.GetByIdAsync(id, cancellationToken);

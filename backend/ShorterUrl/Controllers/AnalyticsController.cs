@@ -14,6 +14,14 @@ namespace ShorterUrl.Controllers
             _analyticsService = analyticsService;
         }
 
+        [HttpGet("")]
+        public async Task<IActionResult> GetOverallAnalytics(CancellationToken cancellationToken = default)
+        {
+            var result = await _analyticsService.GetOverall(cancellationToken);
+
+            return Ok(result);
+        }
+
         [HttpGet("links/{linkId}")]
         public async Task<IActionResult> GetLinkAnalyticsById([FromRoute] int linkId, CancellationToken cancellationToken = default)
         {

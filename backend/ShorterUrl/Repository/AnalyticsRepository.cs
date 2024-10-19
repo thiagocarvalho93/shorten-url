@@ -42,6 +42,14 @@ namespace ShorterUrl.Repository
             return await _context.Analytics.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
 
+        public async Task<Dictionary<string, int>> GetLocations(CancellationToken cancellationToken = default)
+        {
+            return await _context.Analytics
+                .GroupBy(a => a.Location)
+                .Select(g => new { Country = g.Key, Count = g.Count() })
+                .ToDictionaryAsync(x => x.Country, x => x.Count, cancellationToken);
+        }
+
         public async Task<IEnumerable<AnalyticsDAO>> GetByLinkIdAsync(int linkId, CancellationToken cancellationToken = default)
         {
             return await _context.Analytics
