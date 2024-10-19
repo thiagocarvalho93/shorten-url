@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.Extensions.Caching.Memory;
 using ShorterUrl.DTOs;
 using ShorterUrl.Exceptions;
+using ShorterUrl.Helpers;
 using ShorterUrl.Models;
 using ShorterUrl.Repository;
 
@@ -21,25 +22,22 @@ public class LinkService
         _cache = cache;
     }
 
-    public async Task<List<LinkModel>> GetPaginatedAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+    public async Task<PaginatedResponse<LinkModel>> GetPaginatedAsync(int page, int pageSize, CancellationToken cancellationToken = default)
     {
+        if (page < 1)
+            throw new ValidationException("Invalid value for page.");
+
+        if (pageSize < 1)
+            throw new ValidationException("Invalid value for pageSize.");
+
         return await _linkRepository.GetPaginatedAsync(page, pageSize, cancellationToken);
     }
 
-    public async Task<LinkModel> RedirectByShortCodeAsync(string shortCode, ClickRequestDTO? analytics, CancellationToken cancellationToken = default)
+    public async Task<LinkModel> RedirectByShortCodeAsync(string shortCode, ClickRequestDTO? clickRequest, CancellationToken cancellationToken = default)
     {
         var link = await GetByShortCodeAsync(shortCode, cancellationToken);
 
-        var analyticsDAO = new ClickModel()
-        {
-            LinkId = link.Id,
-            ClickDate = DateTime.Now,
-            IpAdress = analytics?.IpAdress ?? "",
-            Location = analytics?.Location ?? "",
-            Referrer = analytics?.Referrer ?? "",
-            UserAgent = analytics?.UserAgent ?? ""
-        };
-        await _clickRepository.AddAsync(analyticsDAO, cancellationToken);
+        await AddClick(clickRequest, link, cancellationToken);
 
         return link;
     }
@@ -60,6 +58,9 @@ public class LinkService
 
     public async Task<LinkModel> InsertAsync(LinkInsertRequestDTO request, CancellationToken cancellationToken = default)
     {
+        if (!request.IsValid())
+            throw new ValidationException("Invalid url.");
+
         var entity = await _linkRepository.GetByUrlAsync(request.Url, cancellationToken);
 
         if (entity is not null)
@@ -95,6 +96,20 @@ public class LinkService
 
         if (deleteCount == 0)
             throw new NotFoundException($"Link with short code {shortCode} not found.");
+    }
+
+    private async Task AddClick(ClickRequestDTO? clickRequest, LinkModel link, CancellationToken cancellationToken)
+    {
+        var click = new ClickModel()
+        {
+            LinkId = link.Id,
+            ClickDate = DateTime.Now,
+            IpAdress = clickRequest?.IpAdress ?? "",
+            Location = clickRequest?.Location ?? "",
+            Referrer = clickRequest?.Referrer ?? "",
+            UserAgent = clickRequest?.UserAgent ?? ""
+        };
+        await _clickRepository.AddAsync(click, cancellationToken);
     }
 
     private static string GenerateRandomAlphanumericString(int size = 5)

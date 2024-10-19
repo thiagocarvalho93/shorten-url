@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ShorterUrl.Data;
+using ShorterUrl.Helpers;
 using ShorterUrl.Models;
 
 namespace ShorterUrl.Repository;
@@ -13,12 +14,16 @@ public class LinkRepository
     }
 
     #region Get
-    public async Task<List<LinkModel>> GetPaginatedAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+    public async Task<PaginatedResponse<LinkModel>> GetPaginatedAsync(int page, int pageSize, CancellationToken cancellationToken = default)
     {
-        return await _context.Links
-            .Skip(page * pageSize)
+        var count = await CountAsync(cancellationToken);
+        var data = await _context.Links
+            .OrderBy(x => x.Id)
+            .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
+
+        return new PaginatedResponse<LinkModel>(data, count, page, pageSize);
     }
 
     public async Task<int[]> GetAllIdsAsync(CancellationToken cancellationToken = default)

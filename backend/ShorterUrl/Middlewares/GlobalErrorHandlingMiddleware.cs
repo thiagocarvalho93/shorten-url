@@ -30,39 +30,28 @@ public class GlobalErrorHandlingMiddleware
 
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        HttpStatusCode status;
-        string message;
+        var (status, message) = exception switch
+        {
+            // Client's fault
+            DirectoryNotFoundException or
+            DllNotFoundException or
+            EntryPointNotFoundException or
+            FileNotFoundException or
+            NotFoundException or
+            KeyNotFoundException => (HttpStatusCode.NotFound, exception.Message),
 
-        Type? exceptionType = exception.GetType();
+            ValidationException => (HttpStatusCode.BadRequest, exception.Message),
 
-        if (exceptionType == typeof(DirectoryNotFoundException) ||
-            exceptionType == typeof(DllNotFoundException) ||
-            exceptionType == typeof(EntryPointNotFoundException) ||
-            exceptionType == typeof(FileNotFoundException) ||
-            exceptionType == typeof(NotFoundException) ||
-            exceptionType == typeof(KeyNotFoundException))
-        {
-            message = exception.Message;
-            status = HttpStatusCode.NotFound;
-        }
-        else if (exceptionType == typeof(NotImplementedException))
-        {
-            status = HttpStatusCode.NotImplemented;
-            message = exception.Message;
-        }
-        else if (exceptionType == typeof(UnauthorizedAccessException) ||
-            exceptionType == typeof(AuthenticationException))
-        {
-            status = HttpStatusCode.Unauthorized;
-            message = exception.Message;
-        }
-        else
-        {
-            status = HttpStatusCode.InternalServerError;
-            message = exception.Message;
-        }
+            UnauthorizedAccessException or
+            AuthenticationException => (HttpStatusCode.Unauthorized, exception.Message),
 
-        string exceptionResult = System.Text.Json.JsonSerializer.Serialize(new { error = message, status });
+            // My fault
+            NotImplementedException => (HttpStatusCode.NotImplemented, exception.Message),
+
+            _ => (HttpStatusCode.InternalServerError, exception.Message)
+        };
+
+        var exceptionResult = System.Text.Json.JsonSerializer.Serialize(new { error = message, status });
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)status;
 

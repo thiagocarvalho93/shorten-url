@@ -15,7 +15,7 @@ public class LinkController : ControllerBase
     }
 
     [HttpGet("")]
-    public async Task<IActionResult> GetAsync([FromQuery] int page = 0, [FromQuery] int pageSize = 25, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetAsync([FromQuery] int page = 1, [FromQuery] int pageSize = 25, CancellationToken cancellationToken = default)
     {
         var data = await _service.GetPaginatedAsync(page, pageSize, cancellationToken);
 
