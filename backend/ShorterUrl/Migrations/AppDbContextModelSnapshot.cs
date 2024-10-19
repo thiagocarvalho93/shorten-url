@@ -16,19 +16,14 @@ namespace ShorterUrl.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.5")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.20");
 
-            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("ShorterUrl.Models.ShortenUrl", b =>
+            modelBuilder.Entity("ShorterUrl.Models.ShortUrlDAO", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("DATE")
@@ -38,17 +33,17 @@ namespace ShorterUrl.Migrations
                         .HasColumnType("DATE")
                         .HasColumnName("expires_at");
 
-                    b.Property<string>("LongUrl")
-                        .IsRequired()
-                        .HasMaxLength(280)
-                        .HasColumnType("VARCHAR")
-                        .HasColumnName("long_url");
-
                     b.Property<string>("Token")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("VARCHAR")
                         .HasColumnName("token");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(280)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("long_url");
 
                     b.HasKey("Id");
 

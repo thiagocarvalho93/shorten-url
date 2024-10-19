@@ -18,14 +18,15 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors(x => x
-        .AllowAnyOrigin()
-        .AllowAnyMethod()
-        .AllowAnyHeader());
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
 
 app.UseMiddleware<GlobalErrorHandlingMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
 app.Run();
 
 void ConfigureMvc(WebApplicationBuilder builder)
@@ -40,7 +41,8 @@ void ConfigureServices(WebApplicationBuilder builder)
     builder.Services.AddMemoryCache();
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     Console.WriteLine($"Connection string: {connectionString}");
-    builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+
+    builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite($"Data Source=database.db"));
     builder.Services.AddTransient<ShortUrlRepository>();
     builder.Services.AddTransient<ShortUrlService>();
 }

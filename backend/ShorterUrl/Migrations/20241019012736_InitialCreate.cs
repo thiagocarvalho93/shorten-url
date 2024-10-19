@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -16,8 +15,8 @@ namespace ShorterUrl.Migrations
                 name: "ShortUrl",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     token = table.Column<string>(type: "VARCHAR", maxLength: 20, nullable: false),
                     long_url = table.Column<string>(type: "VARCHAR", maxLength: 280, nullable: false),
                     created_at = table.Column<DateTime>(type: "DATE", nullable: false),
