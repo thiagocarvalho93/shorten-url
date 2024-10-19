@@ -1,29 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ShorterUrl.Models;
 
 namespace ShorterUrl.Data.Mappings;
 
-public class ShortenUrlMap : IEntityTypeConfiguration<ShortenUrl>
+public class ShortenUrlMap : IEntityTypeConfiguration<ShortUrl>
 {
-    public void Configure(EntityTypeBuilder<ShortenUrl> builder)
+    public void Configure(EntityTypeBuilder<ShortUrl> builder)
     {
-        // Tabela
         builder.ToTable("ShortUrl");
 
-        // Chave Primária
         builder.HasKey(x => x.Id);
 
-        // Identity
         builder.Property(x => x.Id)
             .ValueGeneratedOnAdd()
             .UseIdentityColumn();
 
-        // Propriedades
         builder.Property(x => x.Token)
             .IsRequired()
             .HasColumnName("token")
@@ -46,7 +38,6 @@ public class ShortenUrlMap : IEntityTypeConfiguration<ShortenUrl>
             .HasColumnType("VARCHAR")
             .HasMaxLength(280);
 
-        // Índices
         builder
             .HasIndex(x => x.Token, "IX_URL_TOKEN")
             .IsUnique();

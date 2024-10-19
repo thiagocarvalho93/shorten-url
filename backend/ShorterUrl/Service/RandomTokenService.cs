@@ -1,25 +1,27 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Cryptography;
+using System.Text;
 
-namespace ShorterUrl.Service
+namespace ShorterUrl.Service;
+
+public static class RandomTokenService
 {
-    public static class RandomTokenService
+    public static string GenerateRandomAlphanumericString(int size = 5)
     {
-        public static string GenerateRandomAlfanumericString(int size = 5)
-        {
-            Random res = new Random();
-            String str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder result = new(size);
 
-            String randomstring = "";
+        using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
+        {
+            byte[] uintBuffer = new byte[sizeof(uint)];
 
             for (int i = 0; i < size; i++)
             {
-                int x = res.Next(str.Length);
-                randomstring = randomstring + str[x];
+                rng.GetBytes(uintBuffer);
+                uint num = BitConverter.ToUInt32(uintBuffer, 0);
+                result.Append(chars[(int)(num % (uint)chars.Length)]);
             }
-            return randomstring;
         }
+
+        return result.ToString();
     }
 }

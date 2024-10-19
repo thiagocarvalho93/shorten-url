@@ -19,22 +19,15 @@ namespace ShorterUrl.Controllers
             _cache = cache;
         }
 
-        [HttpGet("")]
-        public async Task<IActionResult> GetAsync(
-            [FromQuery] int page = 0,
-            [FromQuery] int pageSize = 25)
+        [HttpGet]
+        public async Task<IActionResult> GetAsync([FromQuery] int page = 0, [FromQuery] int pageSize = 25)
         {
             try
             {
                 var data = await _repository.GetPaginatedAsync(page, pageSize);
-                return Ok(new
-                {
-                    page,
-                    pageSize,
-                    data
-                });
+                return Ok(new { page, pageSize, data });
             }
-            catch (System.Exception)
+            catch
             {
                 return StatusCode(500, "Erro 5X0001");
             }
@@ -58,8 +51,8 @@ namespace ShorterUrl.Controllers
             }
         }
 
-        [HttpPost("")]
-        public async Task<IActionResult> PostAsync([FromBody] AddShortUrlDTO dto)
+        [HttpPost]
+        public async Task<IActionResult> PostAsync([FromBody] ShortUrlInsertRequestDTO dto)
         {
             try
             {
@@ -67,8 +60,9 @@ namespace ShorterUrl.Controllers
                 if (entity is not null)
                     return Ok(entity);
 
-                string token = RandomTokenService.GenerateRandomAlfanumericString();
-                ShortenUrl model = new()
+                string token = RandomTokenService.GenerateRandomAlphanumericString();
+
+                ShortUrl model = new()
                 {
                     Id = 0,
                     Token = token,

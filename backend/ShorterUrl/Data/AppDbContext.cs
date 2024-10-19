@@ -10,7 +10,7 @@ namespace ShorterUrl.Data;
 
 public class AppDbContext : DbContext
 {
-    public DbSet<ShortenUrl> ShortenUrls { get; set; }
+    public DbSet<ShortUrl> ShortenUrls { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {

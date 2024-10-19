@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ShorterUrl.Data;
 using ShorterUrl.Models;
@@ -16,19 +12,25 @@ public class ShortUrlRepository
         _context = context;
     }
 
-    public async Task<List<ShortenUrl>> GetPaginatedAsync(int page, int pageSize)
+    public async Task<List<ShortUrl>> GetPaginatedAsync(int page, int pageSize)
     {
         return await _context.ShortenUrls
-                                .Skip(page * pageSize)
-                                .Take(pageSize)
-                                .ToListAsync();
+            .Skip(page * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
     }
 
-    public async Task<ShortenUrl> GetByTokenAsync(string token) => await _context.ShortenUrls.FirstOrDefaultAsync(x => x.Token == token);
+    public async Task<ShortUrl> GetByTokenAsync(string token)
+    {
+        return await _context.ShortenUrls.FirstOrDefaultAsync(x => x.Token == token);
+    }
 
-    public async Task<ShortenUrl> GetByUrlAsync(string url) => await _context.ShortenUrls.FirstOrDefaultAsync(x => x.Url == url);
+    public async Task<ShortUrl> GetByUrlAsync(string url)
+    {
+        return await _context.ShortenUrls.FirstOrDefaultAsync(x => x.Url == url);
+    }
 
-    public async Task<ShortenUrl> AddAsync(ShortenUrl model)
+    public async Task<ShortUrl> AddAsync(ShortUrl model)
     {
         await _context.ShortenUrls.AddAsync(model);
         await _context.SaveChangesAsync();
