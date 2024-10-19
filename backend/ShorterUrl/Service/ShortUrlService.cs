@@ -24,7 +24,7 @@ public class ShortUrlService
         return await _urlRepository.GetPaginatedAsync(page, pageSize, cancellationToken);
     }
 
-    public async Task<ShortUrlDAO> RedirectByTokenAsync(string token, AnalyticsRequestDTO? analytics = null, CancellationToken cancellationToken = default)
+    public async Task<ShortUrlDAO> RedirectByTokenAsync(string token, AnalyticsRequestDTO? analytics, CancellationToken cancellationToken = default)
     {
         var shortUrl = await GetByTokenAsync(token, cancellationToken);
 

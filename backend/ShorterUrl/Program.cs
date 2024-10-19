@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ShorterUrl.Data;
+using ShorterUrl.Jobs;
 using ShorterUrl.Middlewares;
 using ShorterUrl.Repository;
 using ShorterUrl.Service;
@@ -46,4 +47,6 @@ void ConfigureServices(WebApplicationBuilder builder)
     builder.Services.AddTransient<ShortUrlRepository>();
     builder.Services.AddTransient<AnalyticsRepository>();
     builder.Services.AddTransient<ShortUrlService>();
+    builder.Services.AddTransient<FakeDataService>();
+    builder.Services.AddHostedService<GenerateFakeDataJob>();
 }

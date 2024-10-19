@@ -39,4 +39,12 @@ public class ShortUrlRepository
 
         return model;
     }
+
+    public async Task<IEnumerable<ShortUrlDAO>> AddAsync(IEnumerable<ShortUrlDAO> model, CancellationToken cancellationToken = default)
+    {
+        await _context.ShortUrls.AddRangeAsync(model);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return model;
+    }
 }
