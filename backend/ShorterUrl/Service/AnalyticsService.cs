@@ -8,18 +8,18 @@ namespace ShorterUrl.Service
     public class AnalyticsService
     {
         private readonly AnalyticsRepository _analyticsRepository;
-        private readonly ShortUrlRepository _shortUrlRepository;
+        private readonly LinkRepository _linkRepository;
 
-        public AnalyticsService(AnalyticsRepository analyticsRepository, ShortUrlRepository shortUrlRepository)
+        public AnalyticsService(AnalyticsRepository analyticsRepository, LinkRepository linkRepository)
         {
             _analyticsRepository = analyticsRepository;
-            _shortUrlRepository = shortUrlRepository;
+            _linkRepository = linkRepository;
         }
 
         public async Task<AnalyticsOverallResponseDTO> GetOverall(CancellationToken cancellationToken = default)
         {
             var clicksCount = await _analyticsRepository.CountAsync(cancellationToken);
-            var urlCount = await _shortUrlRepository.CountAsync(cancellationToken);
+            var urlCount = await _linkRepository.CountAsync(cancellationToken);
             var clicksByLocations = await _analyticsRepository.GetLocations(cancellationToken);
 
             return new AnalyticsOverallResponseDTO
@@ -30,7 +30,7 @@ namespace ShorterUrl.Service
             };
         }
 
-        public async Task<AnalyticsDAO> GetById(int id, CancellationToken cancellationToken = default)
+        public async Task<AnalyticsModel> GetById(int id, CancellationToken cancellationToken = default)
         {
             var analytics = await _analyticsRepository.GetByIdAsync(id, cancellationToken);
 
@@ -64,9 +64,9 @@ namespace ShorterUrl.Service
             return await _analyticsRepository.DeleteByLinkIdAsync(linkId, cancellationToken);
         }
 
-        private async Task<ShortUrlDAO> GetLinkById(int linkId, CancellationToken cancellationToken = default)
+        private async Task<LinkModel> GetLinkById(int linkId, CancellationToken cancellationToken = default)
         {
-            var link = await _shortUrlRepository.GetByIdAsync(linkId, cancellationToken)
+            var link = await _linkRepository.GetByIdAsync(linkId, cancellationToken)
                 ?? throw new NotFoundException($"Link with id {linkId} not found.");
 
             return link;

@@ -23,10 +23,10 @@ public class GenerateFakeDataJob : IHostedService
             _logger.LogInformation("Inserting fake data...");
 
             using var scope = _serviceScopeFactory.CreateScope();
-            var shortUrlRepository = scope.ServiceProvider.GetRequiredService<ShortUrlRepository>();
+            var linkRepository = scope.ServiceProvider.GetRequiredService<LinkRepository>();
             var analyticsRepository = scope.ServiceProvider.GetRequiredService<AnalyticsRepository>();
-            await InsertShortUrls(5000, shortUrlRepository, cancellationToken);
-            await GenerateAnalytics(5000, shortUrlRepository, analyticsRepository, cancellationToken);
+            await InsertLinks(5000, linkRepository, cancellationToken);
+            await GenerateAnalytics(5000, linkRepository, analyticsRepository, cancellationToken);
 
             _logger.LogInformation("Fake data succesfully generated!");
         }
@@ -36,13 +36,13 @@ public class GenerateFakeDataJob : IHostedService
         }
     }
 
-    private async Task GenerateAnalytics(int threshold, ShortUrlRepository shortUrlRepository, AnalyticsRepository analyticsRepository, CancellationToken cancellationToken)
+    private async Task GenerateAnalytics(int threshold, LinkRepository linkRepository, AnalyticsRepository analyticsRepository, CancellationToken cancellationToken)
     {
         var count = await analyticsRepository.CountAsync(cancellationToken);
         if (count < threshold)
         {
             _logger.LogInformation("Generating fake analytics...");
-            var possibleIds = await shortUrlRepository.GetAllIdsAsync(cancellationToken);
+            var possibleIds = await linkRepository.GetAllIdsAsync(cancellationToken);
 
             var fakeAnalytics = _fakeDataService.GenerateAnalyticsDAO(threshold - count, possibleIds);
             await analyticsRepository.AddAsync(fakeAnalytics, cancellationToken);
@@ -51,15 +51,15 @@ public class GenerateFakeDataJob : IHostedService
         }
     }
 
-    private async Task InsertShortUrls(int threshold, ShortUrlRepository shortUrlRepository, CancellationToken cancellationToken)
+    private async Task InsertLinks(int threshold, LinkRepository linkRepository, CancellationToken cancellationToken)
     {
-        var count = await shortUrlRepository.CountAsync(cancellationToken);
+        var count = await linkRepository.CountAsync(cancellationToken);
         if (count < threshold)
         {
             _logger.LogInformation("Generating fake short urls...");
 
-            var fakeUrlData = _fakeDataService.GenerateShortUrlDAO(threshold - count);
-            await shortUrlRepository.AddAsync(fakeUrlData, cancellationToken);
+            var fakeUrlData = _fakeDataService.GenerateLinkDAO(threshold - count);
+            await linkRepository.AddAsync(fakeUrlData, cancellationToken);
 
             _logger.LogInformation("Fake short urls inserted.");
         }

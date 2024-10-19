@@ -9,5 +9,5 @@ public sealed record AnalyticsResponseDTO
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime ExpiresAt { get; set; }
     public int TotalClicks { get; set; }
-    public List<AnalyticsDAO> Clicks { get; set; } = new();
+    public List<AnalyticsModel> Clicks { get; set; } = new();
 }

@@ -4,11 +4,11 @@ using ShorterUrl.Models;
 
 namespace ShorterUrl.Data.Mappings;
 
-public class AnalyticsMap : IEntityTypeConfiguration<AnalyticsDAO>
+public class AnalyticsMap : IEntityTypeConfiguration<AnalyticsModel>
 {
-    public void Configure(EntityTypeBuilder<AnalyticsDAO> builder)
+    public void Configure(EntityTypeBuilder<AnalyticsModel> builder)
     {
-        builder.ToTable("ClickAnalytics");
+        builder.ToTable("Click");
 
         builder.HasKey(a => a.Id);
 
@@ -32,9 +32,9 @@ public class AnalyticsMap : IEntityTypeConfiguration<AnalyticsDAO>
             .IsRequired()
             .HasDefaultValueSql("GETDATE()");
 
-        builder.HasOne(a => a.ShortUrlDAO)
+        builder.HasOne(a => a.LinkModel)
             .WithMany()
-            .HasForeignKey("ShortUrlId")
+            .HasForeignKey("LinkId")
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

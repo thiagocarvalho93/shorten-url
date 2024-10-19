@@ -13,7 +13,7 @@ namespace ShorterUrl.Repository
             _context = context;
         }
 
-        public async Task<AnalyticsDAO> AddAsync(AnalyticsDAO model, CancellationToken cancellationToken = default)
+        public async Task<AnalyticsModel> AddAsync(AnalyticsModel model, CancellationToken cancellationToken = default)
         {
             await _context.Analytics
                 .AddAsync(model, cancellationToken);
@@ -22,7 +22,7 @@ namespace ShorterUrl.Repository
             return model;
         }
 
-        public async Task<IEnumerable<AnalyticsDAO>> AddAsync(IEnumerable<AnalyticsDAO> model, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<AnalyticsModel>> AddAsync(IEnumerable<AnalyticsModel> model, CancellationToken cancellationToken = default)
         {
             await _context.Analytics
                 .AddRangeAsync(model, cancellationToken);
@@ -37,7 +37,7 @@ namespace ShorterUrl.Repository
                 .CountAsync(cancellationToken);
         }
 
-        public async Task<AnalyticsDAO?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        public async Task<AnalyticsModel?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             return await _context.Analytics.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
@@ -50,17 +50,17 @@ namespace ShorterUrl.Repository
                 .ToDictionaryAsync(x => x.Country, x => x.Count, cancellationToken);
         }
 
-        public async Task<IEnumerable<AnalyticsDAO>> GetByLinkIdAsync(int linkId, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<AnalyticsModel>> GetByLinkIdAsync(int linkId, CancellationToken cancellationToken = default)
         {
             return await _context.Analytics
-                .Where(x => x.ShortUrlDAO.Id == linkId)
+                .Where(x => x.LinkModel.Id == linkId)
                 .ToListAsync(cancellationToken);
         }
 
         public async Task<int> DeleteByLinkIdAsync(int linkId, CancellationToken cancellationToken = default)
         {
             return await _context.Analytics
-                .Where(x => x.ShortUrlDAO.Id == linkId)
+                .Where(x => x.LinkModel.Id == linkId)
                 .ExecuteDeleteAsync(cancellationToken);
         }
     }

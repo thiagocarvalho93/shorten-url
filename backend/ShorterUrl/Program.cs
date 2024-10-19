@@ -52,9 +52,9 @@ void ConfigureServices(WebApplicationBuilder builder)
     Console.WriteLine($"Connection string: {connectionString}");
 
     builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(connectionString));
-    builder.Services.AddTransient<ShortUrlRepository>();
+    builder.Services.AddTransient<LinkRepository>();
     builder.Services.AddTransient<AnalyticsRepository>();
-    builder.Services.AddTransient<ShortUrlService>();
+    builder.Services.AddTransient<LinkService>();
     builder.Services.AddTransient<AnalyticsService>();
     builder.Services.AddTransient<FakeDataService>();
     builder.Services.AddHostedService<GenerateFakeDataJob>();

@@ -5,13 +5,13 @@ namespace ShorterUrl.Service;
 
 public class FakeDataService
 {
-    private readonly Faker<ShortUrlDAO> shortUrlFake;
-    private readonly Faker<AnalyticsDAO> analyticsFake;
+    private readonly Faker<LinkModel> linkFake;
+    private readonly Faker<AnalyticsModel> analyticsFake;
 
     public FakeDataService()
     {
-        shortUrlFake = SetupShortUrlFake();
-        analyticsFake = new Faker<AnalyticsDAO>()
+        linkFake = SetupLinkFake();
+        analyticsFake = new Faker<AnalyticsModel>()
             .RuleFor(x => x.ClickDate, f => f.Date.Recent())
             .RuleFor(x => x.UserAgent, f => f.Internet.UserAgent())
             .RuleFor(x => x.IpAdress, f => f.Internet.Ip())
@@ -19,20 +19,20 @@ public class FakeDataService
             .RuleFor(x => x.Location, x => x.Address.Country());
     }
 
-    public IEnumerable<ShortUrlDAO> GenerateShortUrlDAO(int Length)
+    public IEnumerable<LinkModel> GenerateLinkDAO(int Length)
     {
-        return shortUrlFake.Generate(Length);
+        return linkFake.Generate(Length);
     }
 
-    public IEnumerable<AnalyticsDAO> GenerateAnalyticsDAO(int Length, int[] possibleShortUrlIds)
+    public IEnumerable<AnalyticsModel> GenerateAnalyticsDAO(int Length, int[] possibleLinkIds)
     {
-        analyticsFake.RuleFor(x => x.ShortUrlId, f => f.PickRandomParam(possibleShortUrlIds));
+        analyticsFake.RuleFor(x => x.LinkId, f => f.PickRandomParam(possibleLinkIds));
         return analyticsFake.Generate(Length);
     }
 
-    private static Faker<ShortUrlDAO> SetupShortUrlFake()
+    private static Faker<LinkModel> SetupLinkFake()
     {
-        return new Faker<ShortUrlDAO>()
+        return new Faker<LinkModel>()
                     .RuleFor(x => x.CreatedAt, f => f.Date.Recent())
                     .RuleFor(x => x.ExpiresAt, f => f.Date.Soon())
                     .RuleFor(x => x.OriginalUrl, f => f.Internet.Url())

@@ -4,11 +4,11 @@ using ShorterUrl.Models;
 
 namespace ShorterUrl.Data.Mappings;
 
-public class ShortUrlMap : IEntityTypeConfiguration<ShortUrlDAO>
+public class LinkMap : IEntityTypeConfiguration<LinkModel>
 {
-    public void Configure(EntityTypeBuilder<ShortUrlDAO> builder)
+    public void Configure(EntityTypeBuilder<LinkModel> builder)
     {
-        builder.ToTable("ShortUrl");
+        builder.ToTable("Link");
 
         builder.HasKey(x => x.Id);
 
@@ -43,8 +43,8 @@ public class ShortUrlMap : IEntityTypeConfiguration<ShortUrlDAO>
             .IsUnique();
 
         builder.HasMany(s => s.Analytics)
-            .WithOne(a => a.ShortUrlDAO)
-            .HasForeignKey(a => a.ShortUrlId)
+            .WithOne(a => a.LinkModel)
+            .HasForeignKey(a => a.LinkId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

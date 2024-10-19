@@ -5,11 +5,11 @@ using ShorterUrl.Service;
 namespace ShorterUrl.Controllers;
 
 [ApiController]
-public class ShortUrlController : ControllerBase
+public class LinkController : ControllerBase
 {
-    private readonly ShortUrlService _service;
+    private readonly LinkService _service;
 
-    public ShortUrlController(ShortUrlService service)
+    public LinkController(LinkService service)
     {
         _service = service;
     }
@@ -33,7 +33,7 @@ public class ShortUrlController : ControllerBase
     }
 
     [HttpPost("")]
-    public async Task<IActionResult> PostAsync([FromBody] ShortUrlInsertRequestDTO dto, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> PostAsync([FromBody] LinkInsertRequestDTO dto, CancellationToken cancellationToken = default)
     {
         var created = await _service.InsertAsync(dto, cancellationToken);
 
