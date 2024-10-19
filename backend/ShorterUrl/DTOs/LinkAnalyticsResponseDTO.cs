@@ -2,7 +2,7 @@ using ShorterUrl.Models;
 
 namespace ShorterUrl.DTOs;
 
-public sealed record AnalyticsResponseDTO
+public sealed record LinkAnalyticsResponseDTO
 {
     public string? ShortCode { get; set; }
     public string? OriginalUrl { get; set; }

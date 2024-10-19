@@ -16,13 +16,13 @@ namespace ShorterUrl.Service
             _linkRepository = linkRepository;
         }
 
-        public async Task<AnalyticsOverallResponseDTO> GetOverall(CancellationToken cancellationToken = default)
+        public async Task<GeneralAnalyticsResponseDTO> GetGeneralAnalytics(CancellationToken cancellationToken = default)
         {
             var clicksCount = await _analyticsRepository.CountAsync(cancellationToken);
             var urlCount = await _linkRepository.CountAsync(cancellationToken);
             var clicksByLocations = await _analyticsRepository.GetLocations(cancellationToken);
 
-            return new AnalyticsOverallResponseDTO
+            return new GeneralAnalyticsResponseDTO
             {
                 TotalClicks = clicksCount,
                 TotalUrls = urlCount,
@@ -40,13 +40,13 @@ namespace ShorterUrl.Service
             throw new NotFoundException($"Analytics with id {id} not found.");
         }
 
-        public async Task<AnalyticsResponseDTO> GetByLinkId(int linkId, CancellationToken cancellationToken = default)
+        public async Task<LinkAnalyticsResponseDTO> GetByLinkId(int linkId, CancellationToken cancellationToken = default)
         {
             var link = await GetLinkById(linkId, cancellationToken);
 
             var clickList = (await _analyticsRepository.GetByLinkIdAsync(linkId, cancellationToken)).ToList();
 
-            return new AnalyticsResponseDTO
+            return new LinkAnalyticsResponseDTO
             {
                 Clicks = clickList,
                 ShortCode = link.ShortCode,

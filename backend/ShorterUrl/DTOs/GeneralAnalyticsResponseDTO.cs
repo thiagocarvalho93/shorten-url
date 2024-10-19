@@ -1,6 +1,6 @@
 namespace ShorterUrl.DTOs;
 
-public sealed record AnalyticsOverallResponseDTO
+public sealed record GeneralAnalyticsResponseDTO
 {
     public int TotalUrls { get; set; }
     public int TotalClicks { get; set; }

@@ -15,9 +15,9 @@ namespace ShorterUrl.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> GetOverallAnalytics(CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetGeneralAnalytics(CancellationToken cancellationToken = default)
         {
-            var result = await _analyticsService.GetOverall(cancellationToken);
+            var result = await _analyticsService.GetGeneralAnalytics(cancellationToken);
 
             return Ok(result);
         }
