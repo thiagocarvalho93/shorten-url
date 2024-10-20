@@ -36,14 +36,12 @@ public class LinkRepository
     public async Task<LinkModel?> GetByShortCodeAsync(string shortCode, CancellationToken cancellationToken = default)
     {
         return await _context.Links
-            .Include(x => x.Clicks)
             .FirstOrDefaultAsync(x => x.ShortCode == shortCode, cancellationToken);
     }
 
     public async Task<LinkModel?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         return await _context.Links
-            .Include(x => x.Clicks)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 

@@ -31,7 +31,7 @@ public class FakeDataService
                     .RuleFor(x => x.CreatedAt, f => f.Date.Recent())
                     .RuleFor(x => x.ExpiresAt, f => f.Date.Soon())
                     .RuleFor(x => x.OriginalUrl, f => f.Internet.Url())
-                    .RuleFor(x => x.ShortCode, f => f.Random.AlphaNumeric(5));
+                    .RuleFor(x => x.ShortCode, f => f.Random.AlphaNumeric(7));
     }
 
     private static Faker<ClickModel> SetupClickFake()

@@ -66,7 +66,7 @@ public class LinkService
         if (entity is not null)
             return entity;
 
-        string shortCode = GenerateRandomAlphanumericString();
+        string shortCode = GenerateRandomAlphanumericString(7);
 
         LinkModel model = new()
         {
