@@ -103,4 +103,12 @@ public class LinkRepository
     }
 
     #endregion
+    #region Update
+    public async Task<int> ChangeAliasAsync(string shortCode, string newAlias, CancellationToken cancellationToken = default)
+    {
+        return await _context.Links
+            .Where(x => x.ShortCode == shortCode)
+            .ExecuteUpdateAsync(x => x.SetProperty(p => p.Alias, p => newAlias), cancellationToken);
+    }
+    #endregion
 }

@@ -58,9 +58,6 @@ public class LinkService
 
     public async Task<LinkModel> InsertAsync(LinkInsertRequestDTO request, CancellationToken cancellationToken = default)
     {
-        if (!request.IsValid())
-            throw new ValidationException("Invalid url.");
-
         var entity = await _linkRepository.GetByUrlAsync(request.Url, cancellationToken);
 
         if (entity is not null)
@@ -96,6 +93,13 @@ public class LinkService
 
         if (deleteCount == 0)
             throw new NotFoundException($"Link with short code {shortCode} not found.");
+    }
+
+    public async Task ChangeAlias(string shortCode, string newAlias, CancellationToken cancellationToken = default)
+    {
+        var link = await GetByShortCodeAsync(shortCode, cancellationToken);
+
+        await _linkRepository.ChangeAliasAsync(shortCode, newAlias, cancellationToken);
     }
 
     private async Task AddClick(ClickRequestDTO? clickRequest, LinkModel link, CancellationToken cancellationToken)

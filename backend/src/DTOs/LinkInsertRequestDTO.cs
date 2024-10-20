@@ -4,11 +4,7 @@ namespace ShorterUrl.DTOs;
 
 public sealed record LinkInsertRequestDTO
 {
-    [Required(ErrorMessage = "url is required")]
+    [Required(ErrorMessage = "Url is required")]
+    [Url(ErrorMessage = "Invalid URL format")]
     public string Url { get; set; } = "";
-
-    public bool IsValid()
-    {
-        return Uri.IsWellFormedUriString(Url, UriKind.Absolute);
-    }
 }

@@ -19,7 +19,12 @@ public class LinkMap : IEntityTypeConfiguration<LinkModel>
         builder.Property(x => x.ShortCode)
             .IsRequired()
             .HasColumnType("VARCHAR")
-            .HasMaxLength(20);
+            .HasMaxLength(10);
+
+        builder.Property(x => x.Alias)
+            .IsRequired()
+            .HasColumnType("VARCHAR")
+            .HasMaxLength(30);
 
         builder.Property(x => x.CreatedAt)
             .IsRequired()

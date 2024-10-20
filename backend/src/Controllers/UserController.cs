@@ -5,7 +5,7 @@ using ShorterUrl.Service;
 namespace ShorterUrl.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("user")]
 public class UserController : ControllerBase
 {
     private readonly UserService _userService;

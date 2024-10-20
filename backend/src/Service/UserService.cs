@@ -33,9 +33,7 @@ public class UserService
     public async Task<UserModel> AddUserAsync(UserInsertRequestDTO userRequest)
     {
         if (await _userRepository.UserExistsAsync(userRequest.Username))
-        {
             throw new InvalidOperationException("User with the same username already exists.");
-        }
 
         var hashedPassword = HashPassword(userRequest.Password);
 
@@ -89,9 +87,7 @@ public class UserService
         var user = await _userRepository.GetUserByUsernameAsync(username);
 
         if (user != null && VerifyPassword(password, user.PasswordHash))
-        {
             return user;
-        }
 
         return null;
     }
@@ -124,9 +120,7 @@ public class UserService
         for (int i = 0; i < 20; i++)
         {
             if (hashBytes[i + 16] != hash[i])
-            {
                 return false;
-            }
         }
 
         return true;
