@@ -3,17 +3,19 @@ using ShorterUrl.DTOs;
 using ShorterUrl.Exceptions;
 using ShorterUrl.Models;
 using ShorterUrl.Repository;
-using System.Text;
+using System.Security.Authentication;
 
 namespace ShorterUrl.Service;
 
 public class UserService
 {
     private readonly UserRepository _userRepository;
+    private readonly JwtService _jwtService;
 
-    public UserService(UserRepository userRepository)
+    public UserService(UserRepository userRepository, JwtService jwtService)
     {
         _userRepository = userRepository;
+        _jwtService = jwtService;
     }
 
     public async Task<IEnumerable<UserModel>> GetAllUsersAsync()
@@ -67,12 +69,31 @@ public class UserService
     {
         var user = await _userRepository.GetUserByIdAsync(id) ?? throw new NotFoundException("User not found.");
 
-        await _userRepository.DeleteUserAsync(id);
+        await _userRepository.DeleteUserAsync(user.Id);
     }
 
     public async Task<bool> UserExistsAsync(string username)
     {
         return await _userRepository.UserExistsAsync(username);
+    }
+
+    public async Task<string> Login(LoginRequestDTO loginRequestDTO)
+    {
+        var user = await ValidateUserAsync(loginRequestDTO.Username, loginRequestDTO.Password) ?? throw new AuthenticationException("Invalid username or password.");
+
+        return _jwtService.GenerateToken(user);
+    }
+
+    private async Task<UserModel?> ValidateUserAsync(string username, string password)
+    {
+        var user = await _userRepository.GetUserByUsernameAsync(username);
+
+        if (user != null && VerifyPassword(password, user.PasswordHash))
+        {
+            return user;
+        }
+
+        return null;
     }
 
     private static string HashPassword(string password)

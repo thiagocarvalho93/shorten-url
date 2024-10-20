@@ -40,4 +40,12 @@ public class UserController : ControllerBase
 
         return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
     }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginRequest)
+    {
+        var token = await _userService.Login(loginRequest);
+
+        return Ok(new { token });
+    }
 }
