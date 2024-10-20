@@ -86,5 +86,8 @@ void ConfigureServices(WebApplicationBuilder builder)
     builder.Services.AddTransient<FakeDataService>();
     builder.Services.AddTransient<JwtService>();
 
-    builder.Services.AddHostedService<GenerateFakeDataJob>();
+    if (builder.Environment.IsDevelopment())
+    {
+        builder.Services.AddHostedService<GenerateFakeDataJob>();
+    }
 }
