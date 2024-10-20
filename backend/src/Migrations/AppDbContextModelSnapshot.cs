@@ -18,11 +18,12 @@ namespace ShorterUrl.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.20");
 
-            modelBuilder.Entity("ShorterUrl.Models.AnalyticsModel", b =>
+            modelBuilder.Entity("ShorterUrl.Models.ClickModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTime>("ClickDate")
                         .ValueGeneratedOnAdd()
@@ -34,9 +35,6 @@ namespace ShorterUrl.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("LinkId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("LinkModelId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Location")
@@ -55,8 +53,6 @@ namespace ShorterUrl.Migrations
 
                     b.HasIndex("LinkId");
 
-                    b.HasIndex("LinkModelId");
-
                     b.ToTable("Click", (string)null);
                 });
 
@@ -68,24 +64,20 @@ namespace ShorterUrl.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("DATE")
-                        .HasColumnName("created_at");
+                        .HasColumnType("DATE");
 
                     b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("DATE")
-                        .HasColumnName("expires_at");
+                        .HasColumnType("DATE");
 
                     b.Property<string>("OriginalUrl")
                         .IsRequired()
                         .HasMaxLength(280)
-                        .HasColumnType("VARCHAR")
-                        .HasColumnName("original_url");
+                        .HasColumnType("VARCHAR");
 
                     b.Property<string>("ShortCode")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("VARCHAR")
-                        .HasColumnName("short_code");
+                        .HasColumnType("VARCHAR");
 
                     b.HasKey("Id");
 
@@ -95,24 +87,20 @@ namespace ShorterUrl.Migrations
                     b.ToTable("Link", (string)null);
                 });
 
-            modelBuilder.Entity("ShorterUrl.Models.AnalyticsModel", b =>
+            modelBuilder.Entity("ShorterUrl.Models.ClickModel", b =>
                 {
-                    b.HasOne("ShorterUrl.Models.LinkModel", "LinkModel")
-                        .WithMany()
+                    b.HasOne("ShorterUrl.Models.LinkModel", "Link")
+                        .WithMany("Clicks")
                         .HasForeignKey("LinkId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ShorterUrl.Models.LinkModel", null)
-                        .WithMany("Analytics")
-                        .HasForeignKey("LinkModelId");
-
-                    b.Navigation("LinkModel");
+                    b.Navigation("Link");
                 });
 
             modelBuilder.Entity("ShorterUrl.Models.LinkModel", b =>
                 {
-                    b.Navigation("Analytics");
+                    b.Navigation("Clicks");
                 });
 #pragma warning restore 612, 618
         }

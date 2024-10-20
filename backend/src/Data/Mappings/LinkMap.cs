@@ -18,33 +18,24 @@ public class LinkMap : IEntityTypeConfiguration<LinkModel>
 
         builder.Property(x => x.ShortCode)
             .IsRequired()
-            .HasColumnName("short_code")
             .HasColumnType("VARCHAR")
             .HasMaxLength(20);
 
         builder.Property(x => x.CreatedAt)
             .IsRequired()
-            .HasColumnName("created_at")
             .HasColumnType("DATE");
 
         builder.Property(x => x.ExpiresAt)
             .IsRequired()
-            .HasColumnName("expires_at")
             .HasColumnType("DATE");
 
         builder.Property(x => x.OriginalUrl)
             .IsRequired()
-            .HasColumnName("original_url")
             .HasColumnType("VARCHAR")
             .HasMaxLength(280);
 
         builder
             .HasIndex(x => x.ShortCode, "IX_URL_TOKEN")
             .IsUnique();
-
-        builder.HasMany(s => s.Clicks)
-            .WithOne(a => a.Link)
-            .HasForeignKey(a => a.LinkId)
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }

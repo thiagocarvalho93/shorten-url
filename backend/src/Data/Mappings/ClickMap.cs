@@ -4,13 +4,17 @@ using ShorterUrl.Models;
 
 namespace ShorterUrl.Data.Mappings;
 
-public class AnalyticsMap : IEntityTypeConfiguration<ClickModel>
+public class ClickMap : IEntityTypeConfiguration<ClickModel>
 {
     public void Configure(EntityTypeBuilder<ClickModel> builder)
     {
         builder.ToTable("Click");
 
         builder.HasKey(a => a.Id);
+
+        builder.Property(x => x.Id)
+            .ValueGeneratedOnAdd()
+            .UseIdentityColumn();
 
         builder.Property(a => a.IpAdress)
             .HasMaxLength(45)
@@ -31,10 +35,5 @@ public class AnalyticsMap : IEntityTypeConfiguration<ClickModel>
         builder.Property(a => a.ClickDate)
             .IsRequired()
             .HasDefaultValueSql("GETDATE()");
-
-        builder.HasOne(a => a.Link)
-            .WithMany()
-            .HasForeignKey("LinkId")
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }

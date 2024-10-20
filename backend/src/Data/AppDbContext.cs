@@ -14,6 +14,6 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new LinkMap());
-        modelBuilder.ApplyConfiguration(new AnalyticsMap());
+        modelBuilder.ApplyConfiguration(new ClickMap());
     }
 }

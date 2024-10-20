@@ -12,8 +12,8 @@ using ShorterUrl.Data;
 namespace ShorterUrl.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241019020352_AnalyticsTable")]
-    partial class AnalyticsTable
+    [Migration("20241020133141_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,11 +21,12 @@ namespace ShorterUrl.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.20");
 
-            modelBuilder.Entity("ShorterUrl.Models.AnalyticsDAO", b =>
+            modelBuilder.Entity("ShorterUrl.Models.ClickModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTime>("ClickDate")
                         .ValueGeneratedOnAdd()
@@ -36,6 +37,9 @@ namespace ShorterUrl.Migrations
                         .HasMaxLength(45)
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("LinkId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Location")
                         .HasMaxLength(255)
                         .HasColumnType("TEXT");
@@ -44,21 +48,18 @@ namespace ShorterUrl.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("ShortUrlId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("UserAgent")
                         .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ShortUrlId");
+                    b.HasIndex("LinkId");
 
-                    b.ToTable("ClickAnalytics", (string)null);
+                    b.ToTable("Click", (string)null);
                 });
 
-            modelBuilder.Entity("ShorterUrl.Models.ShortUrlDAO", b =>
+            modelBuilder.Entity("ShorterUrl.Models.LinkModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -66,42 +67,43 @@ namespace ShorterUrl.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("DATE")
-                        .HasColumnName("created_at");
+                        .HasColumnType("DATE");
 
                     b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("DATE")
-                        .HasColumnName("expires_at");
+                        .HasColumnType("DATE");
 
                     b.Property<string>("OriginalUrl")
                         .IsRequired()
                         .HasMaxLength(280)
-                        .HasColumnType("VARCHAR")
-                        .HasColumnName("original_url");
+                        .HasColumnType("VARCHAR");
 
                     b.Property<string>("ShortCode")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("VARCHAR")
-                        .HasColumnName("short_code");
+                        .HasColumnType("VARCHAR");
 
                     b.HasKey("Id");
 
                     b.HasIndex(new[] { "ShortCode" }, "IX_URL_TOKEN")
                         .IsUnique();
 
-                    b.ToTable("ShortUrl", (string)null);
+                    b.ToTable("Link", (string)null);
                 });
 
-            modelBuilder.Entity("ShorterUrl.Models.AnalyticsDAO", b =>
+            modelBuilder.Entity("ShorterUrl.Models.ClickModel", b =>
                 {
-                    b.HasOne("ShorterUrl.Models.ShortUrlDAO", "ShortUrlDAO")
-                        .WithMany()
-                        .HasForeignKey("ShortUrlId")
+                    b.HasOne("ShorterUrl.Models.LinkModel", "Link")
+                        .WithMany("Clicks")
+                        .HasForeignKey("LinkId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ShortUrlDAO");
+                    b.Navigation("Link");
+                });
+
+            modelBuilder.Entity("ShorterUrl.Models.LinkModel", b =>
+                {
+                    b.Navigation("Clicks");
                 });
 #pragma warning restore 612, 618
         }
