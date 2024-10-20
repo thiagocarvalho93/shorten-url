@@ -56,7 +56,7 @@ public class LinkService
         throw new NotFoundException($"Short code {shortCode} not found.");
     }
 
-    public async Task<LinkModel> InsertAsync(LinkInsertRequestDTO request, CancellationToken cancellationToken = default)
+    public async Task<LinkModel> InsertAsync(LinkInsertRequestDTO request, string userId, CancellationToken cancellationToken = default)
     {
         var entity = await _linkRepository.GetByUrlAsync(request.Url, cancellationToken);
 
@@ -72,6 +72,7 @@ public class LinkService
             CreatedAt = DateTime.Now,
             ExpiresAt = DateTime.Now.AddDays(1),
             OriginalUrl = request.Url,
+            UserId = Int32.Parse(userId)
         };
 
         await _linkRepository.AddAsync(model, cancellationToken);

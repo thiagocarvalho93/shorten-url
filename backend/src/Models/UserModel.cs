@@ -13,4 +13,5 @@ public class UserModel
     public string LastName { get; set; }
     public DateTime DateCreated { get; set; } = DateTime.UtcNow;
     public bool IsActive { get; set; } = true;
+    public List<LinkModel> Links { get; set; }
 }

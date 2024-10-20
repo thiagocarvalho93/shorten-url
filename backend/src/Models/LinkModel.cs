@@ -12,4 +12,6 @@ public class LinkModel
     public DateTime ExpiresAt { get; set; }
     [JsonIgnore]
     public List<ClickModel> Clicks { get; set; } = new();
+    public UserModel User { get; set; }
+    public int UserId { get; set; }
 }
