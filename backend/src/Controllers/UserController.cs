@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using ShorterUrl.Models;
+using ShorterUrl.DTOs;
 using ShorterUrl.Service;
 
 namespace ShorterUrl.Controllers;
@@ -33,11 +33,11 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
-    // Request DTO > password encryption
     [HttpPost]
-    public async Task<IActionResult> CreateUser(UserModel user)
+    public async Task<IActionResult> CreateUser(UserInsertRequestDTO userRequest)
     {
-        await _userService.AddUserAsync(user);
+        var user = await _userService.AddUserAsync(userRequest);
+
         return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
     }
 }
