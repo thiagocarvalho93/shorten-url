@@ -13,13 +13,15 @@ public class LinkService
 {
     public readonly LinkRepository _linkRepository;
     public readonly ClickRepository _clickRepository;
+    private readonly LocationService _locationService;
     private readonly IMemoryCache _cache;
 
-    public LinkService(LinkRepository linkRepository, ClickRepository clickRepository, IMemoryCache cache)
+    public LinkService(LinkRepository linkRepository, ClickRepository clickRepository, IMemoryCache cache, LocationService locationService)
     {
         _linkRepository = linkRepository;
         _clickRepository = clickRepository;
         _cache = cache;
+        _locationService = locationService;
     }
 
     public async Task<PaginatedResponse<LinkModel>> GetPaginatedAsync(int page, int pageSize, CancellationToken cancellationToken = default)
@@ -103,18 +105,32 @@ public class LinkService
         await _linkRepository.ChangeAliasAsync(shortCode, newAlias, cancellationToken);
     }
 
-    private async Task AddClick(ClickRequestDTO? clickRequest, LinkModel link, CancellationToken cancellationToken)
+    private async Task AddClick(ClickRequestDTO clickRequest, LinkModel link, CancellationToken cancellationToken)
     {
+        var location = await GetLocationSafelyAsync(clickRequest.IpAdress);
+
         var click = new ClickModel()
         {
             LinkId = link.Id,
             ClickDate = DateTime.Now,
             IpAdress = clickRequest?.IpAdress ?? "",
-            Location = clickRequest?.Location ?? "",
+            Location = location,
             Referrer = clickRequest?.Referrer ?? "",
             UserAgent = clickRequest?.UserAgent ?? ""
         };
         await _clickRepository.AddAsync(click, cancellationToken);
+    }
+
+    private async Task<string> GetLocationSafelyAsync(string ipAddress)
+    {
+        try
+        {
+            return await _locationService.GetLocationAsync(ipAddress);
+        }
+        catch
+        {
+            return string.Empty;
+        }
     }
 
     private static string GenerateRandomAlphanumericString(int size = 5)
