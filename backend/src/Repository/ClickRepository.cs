@@ -68,6 +68,28 @@ namespace ShorterUrl.Repository
                 .ToDictionaryAsync(x => ReturnStringOrUnknown(x.DeviceLanguage), x => x.Count, cancellationToken);
         }
 
+        public async Task<Dictionary<string, int>> GetDaysOfWeekByLinkId(int linkId, CancellationToken cancellationToken = default)
+        {
+            var analytics = await _context.Analytics
+                .Where(x => x.LinkId == linkId)
+                .GroupBy(a => a.ClickDate.DayOfWeek)
+                .Select(g => new { DayOfWeek = g.Key.ToString(), Count = g.Count() })
+                .ToListAsync(cancellationToken);
+
+            return analytics.ToDictionary(x => ReturnStringOrUnknown(x.DayOfWeek), x => x.Count);
+        }
+
+        public async Task<Dictionary<string, int>> GetDayHoursByLinkId(int linkId, CancellationToken cancellationToken = default)
+        {
+            var analytics = await _context.Analytics
+                .Where(x => x.LinkId == linkId)
+                .GroupBy(a => a.ClickDate.Hour)
+                .Select(g => new { Hour = g.Key.ToString(), Count = g.Count() })
+                .ToListAsync(cancellationToken);
+
+            return analytics.ToDictionary(x => ReturnStringOrUnknown(x.Hour), x => x.Count);
+        }
+
         public async Task<IEnumerable<ClickModel>> GetByLinkIdAsync(int linkId, CancellationToken cancellationToken = default)
         {
             return await _context.Analytics

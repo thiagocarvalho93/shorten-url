@@ -46,6 +46,22 @@ namespace ShorterUrl.Controllers
             return Ok(result);
         }
 
+        [HttpGet("links/{shortCode}/days-of-week")]
+        public async Task<IActionResult> GetClickDaysOfWeekByLinkShortUrl([FromRoute] string shortCode, CancellationToken cancellationToken = default)
+        {
+            var result = await _analyticsService.GetClickDaysOfWeekByLinkShortUrl(shortCode, cancellationToken);
+
+            return Ok(result);
+        }
+
+        [HttpGet("links/{shortCode}/hours")]
+        public async Task<IActionResult> GetClickDayHoursByLinkShortUrl([FromRoute] string shortCode, CancellationToken cancellationToken = default)
+        {
+            var result = await _analyticsService.GetClickDayHoursByLinkShortUrl(shortCode, cancellationToken);
+
+            return Ok(result);
+        }
+
         [HttpDelete("links/{shortCode}")]
         public async Task<IActionResult> DeleteLinkClicksByShortCode([FromRoute] string shortCode, CancellationToken cancellationToken = default)
         {

@@ -92,6 +92,24 @@ namespace ShorterUrl.Service
             return locations;
         }
 
+        public async Task<Dictionary<string, int>> GetClickDaysOfWeekByLinkShortUrl(string shortCode, CancellationToken cancellationToken = default)
+        {
+            var link = await GetLinkByShortCode(shortCode, cancellationToken);
+
+            var locations = await _clickRepository.GetDaysOfWeekByLinkId(link.Id, cancellationToken);
+
+            return locations;
+        }
+
+        public async Task<Dictionary<string, int>> GetClickDayHoursByLinkShortUrl(string shortCode, CancellationToken cancellationToken = default)
+        {
+            var link = await GetLinkByShortCode(shortCode, cancellationToken);
+
+            var locations = await _clickRepository.GetDayHoursByLinkId(link.Id, cancellationToken);
+
+            return locations;
+        }
+
         public async Task<int> DeleteByLinkId(int linkId, CancellationToken cancellationToken = default)
         {
             await GetLinkById(linkId, cancellationToken);
