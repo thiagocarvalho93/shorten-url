@@ -14,7 +14,7 @@ namespace ShorterUrl.Controllers
             _analyticsService = analyticsService;
         }
 
-        [HttpGet("")]
+        [HttpGet("general")]
         public async Task<IActionResult> GetGeneralAnalytics(CancellationToken cancellationToken = default)
         {
             var result = await _analyticsService.GetGeneralAnalytics(cancellationToken);
@@ -30,8 +30,24 @@ namespace ShorterUrl.Controllers
             return Ok(result);
         }
 
+        [HttpGet("links/{shortCode}/locations")]
+        public async Task<IActionResult> GetClickLocationsByLinkShortUrl([FromRoute] string shortCode, CancellationToken cancellationToken = default)
+        {
+            var result = await _analyticsService.GetClickLocationsByLinkShortUrl(shortCode, cancellationToken);
+
+            return Ok(result);
+        }
+
+        [HttpGet("links/{shortCode}/device-languages")]
+        public async Task<IActionResult> GetClickDeviceLanguageByLinkShortUrl([FromRoute] string shortCode, CancellationToken cancellationToken = default)
+        {
+            var result = await _analyticsService.GetClickDeviceLanguageByLinkShortUrl(shortCode, cancellationToken);
+
+            return Ok(result);
+        }
+
         [HttpDelete("links/{shortCode}")]
-        public async Task<IActionResult> DeleteLinkAnalyticsByShortCode([FromRoute] string shortCode, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> DeleteLinkClicksByShortCode([FromRoute] string shortCode, CancellationToken cancellationToken = default)
         {
             await _analyticsService.DeleteByLinkShortCode(shortCode, cancellationToken);
 

@@ -47,7 +47,25 @@ namespace ShorterUrl.Repository
             return await _context.Analytics
                 .GroupBy(a => a.Location)
                 .Select(g => new { Country = g.Key, Count = g.Count() })
-                .ToDictionaryAsync(x => x.Country, x => x.Count, cancellationToken);
+                .ToDictionaryAsync(x => ReturnStringOrUnknown(x.Country), x => x.Count, cancellationToken);
+        }
+
+        public async Task<Dictionary<string, int>> GetLocationsByLinkId(int linkId, CancellationToken cancellationToken = default)
+        {
+            return await _context.Analytics
+                .Where(x => x.LinkId == linkId)
+                .GroupBy(a => a.Location)
+                .Select(g => new { Country = g.Key, Count = g.Count() })
+                .ToDictionaryAsync(x => ReturnStringOrUnknown(x.Country), x => x.Count, cancellationToken);
+        }
+
+        public async Task<Dictionary<string, int>> GetDeviceLanguagesByLinkId(int linkId, CancellationToken cancellationToken = default)
+        {
+            return await _context.Analytics
+                .Where(x => x.LinkId == linkId)
+                .GroupBy(a => a.DeviceLanguage)
+                .Select(g => new { DeviceLanguage = g.Key, Count = g.Count() })
+                .ToDictionaryAsync(x => ReturnStringOrUnknown(x.DeviceLanguage), x => x.Count, cancellationToken);
         }
 
         public async Task<IEnumerable<ClickModel>> GetByLinkIdAsync(int linkId, CancellationToken cancellationToken = default)
@@ -62,6 +80,11 @@ namespace ShorterUrl.Repository
             return await _context.Analytics
                 .Where(x => x.Link.Id == linkId)
                 .ExecuteDeleteAsync(cancellationToken);
+        }
+
+        private static string ReturnStringOrUnknown(string? str)
+        {
+            return String.IsNullOrEmpty(str) ? "unknown" : str;
         }
     }
 }

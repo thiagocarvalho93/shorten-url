@@ -74,6 +74,24 @@ namespace ShorterUrl.Service
             };
         }
 
+        public async Task<Dictionary<string, int>> GetClickLocationsByLinkShortUrl(string shortCode, CancellationToken cancellationToken = default)
+        {
+            var link = await GetLinkByShortCode(shortCode, cancellationToken);
+
+            var locations = await _clickRepository.GetLocationsByLinkId(link.Id, cancellationToken);
+
+            return locations;
+        }
+
+        public async Task<Dictionary<string, int>> GetClickDeviceLanguageByLinkShortUrl(string shortCode, CancellationToken cancellationToken = default)
+        {
+            var link = await GetLinkByShortCode(shortCode, cancellationToken);
+
+            var locations = await _clickRepository.GetDeviceLanguagesByLinkId(link.Id, cancellationToken);
+
+            return locations;
+        }
+
         public async Task<int> DeleteByLinkId(int linkId, CancellationToken cancellationToken = default)
         {
             await GetLinkById(linkId, cancellationToken);
