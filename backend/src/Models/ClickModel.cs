@@ -10,4 +10,5 @@ public class ClickModel
     public string UserAgent { get; set; } = "";
     public string Location { get; set; } = "";
     public string Referrer { get; set; } = "";
+    public string DeviceLanguage { get; set; } = "";
 }

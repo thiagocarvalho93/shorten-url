@@ -116,7 +116,8 @@ public class LinkService
             IpAdress = clickRequest?.IpAdress ?? "",
             Location = location,
             Referrer = clickRequest?.Referrer ?? "",
-            UserAgent = clickRequest?.UserAgent ?? ""
+            UserAgent = clickRequest?.UserAgent ?? "",
+            DeviceLanguage = clickRequest?.DeviceLanguage ?? "",
         };
         await _clickRepository.AddAsync(click, cancellationToken);
     }

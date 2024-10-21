@@ -32,6 +32,10 @@ public class ClickMap : IEntityTypeConfiguration<ClickModel>
             .HasMaxLength(255)
             .IsRequired(false);
 
+        builder.Property(a => a.DeviceLanguage)
+            .HasMaxLength(255)
+            .IsRequired(false);
+
         builder.Property(a => a.ClickDate)
             .IsRequired()
             .HasDefaultValueSql("GETDATE()");
