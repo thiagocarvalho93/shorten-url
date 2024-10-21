@@ -57,6 +57,23 @@ namespace ShorterUrl.Service
             };
         }
 
+        public async Task<LinkAnalyticsResponseDTO> GetByLinkShortUrl(string shortCode, CancellationToken cancellationToken = default)
+        {
+            var link = await GetLinkByShortCode(shortCode, cancellationToken);
+
+            var clickList = (await _clickRepository.GetByLinkIdAsync(link.Id, cancellationToken)).ToList();
+
+            return new LinkAnalyticsResponseDTO
+            {
+                Clicks = clickList,
+                ShortCode = link.ShortCode,
+                TotalClicks = clickList.Count,
+                CreatedAt = link.CreatedAt,
+                ExpiresAt = link.ExpiresAt,
+                OriginalUrl = link.OriginalUrl,
+            };
+        }
+
         public async Task<int> DeleteByLinkId(int linkId, CancellationToken cancellationToken = default)
         {
             await GetLinkById(linkId, cancellationToken);
@@ -64,10 +81,25 @@ namespace ShorterUrl.Service
             return await _clickRepository.DeleteByLinkIdAsync(linkId, cancellationToken);
         }
 
+        public async Task<int> DeleteByLinkShortCode(string shortCode, CancellationToken cancellationToken = default)
+        {
+            var link = await GetLinkByShortCode(shortCode, cancellationToken);
+
+            return await _clickRepository.DeleteByLinkIdAsync(link.Id, cancellationToken);
+        }
+
         private async Task<LinkModel> GetLinkById(int linkId, CancellationToken cancellationToken = default)
         {
             var link = await _linkRepository.GetByIdAsync(linkId, cancellationToken)
                 ?? throw new NotFoundException($"Link with id {linkId} not found.");
+
+            return link;
+        }
+
+        private async Task<LinkModel> GetLinkByShortCode(string shortCode, CancellationToken cancellationToken)
+        {
+            var link = await _linkRepository.GetByShortCodeAsync(shortCode, cancellationToken)
+                ?? throw new NotFoundException($"Link with short code {shortCode} not found.");
 
             return link;
         }

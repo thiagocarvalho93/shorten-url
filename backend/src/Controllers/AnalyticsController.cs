@@ -22,18 +22,18 @@ namespace ShorterUrl.Controllers
             return Ok(result);
         }
 
-        [HttpGet("links/{linkId}")]
-        public async Task<IActionResult> GetLinkAnalyticsById([FromRoute] int linkId, CancellationToken cancellationToken = default)
+        [HttpGet("links/{shortCode}")]
+        public async Task<IActionResult> GetLinkAnalyticsByShortCode([FromRoute] string shortCode, CancellationToken cancellationToken = default)
         {
-            var result = await _analyticsService.GetByLinkId(linkId, cancellationToken);
+            var result = await _analyticsService.GetByLinkShortUrl(shortCode, cancellationToken);
 
             return Ok(result);
         }
 
-        [HttpDelete("links/{linkId}")]
-        public async Task<IActionResult> DeleteLinkAnalyticsById([FromRoute] int linkId, CancellationToken cancellationToken = default)
+        [HttpDelete("links/{shortCode}")]
+        public async Task<IActionResult> DeleteLinkAnalyticsByShortCode([FromRoute] string shortCode, CancellationToken cancellationToken = default)
         {
-            await _analyticsService.DeleteByLinkId(linkId, cancellationToken);
+            await _analyticsService.DeleteByLinkShortCode(shortCode, cancellationToken);
 
             return NoContent();
         }
