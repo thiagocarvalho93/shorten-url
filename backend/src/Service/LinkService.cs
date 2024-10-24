@@ -26,13 +26,12 @@ public class LinkService
 
     public async Task<PaginatedResponse<LinkModel>> GetPaginatedAsync(int page, int pageSize, CancellationToken cancellationToken = default)
     {
-        if (page < 1)
-            throw new ValidationException("Invalid value for page.");
-
-        if (pageSize < 1)
-            throw new ValidationException("Invalid value for pageSize.");
-
         return await _linkRepository.GetPaginatedAsync(page, pageSize, cancellationToken);
+    }
+
+    public async Task<PaginatedResponse<LinkModel>> GetPaginatedByUserIdAsync(int page, int pageSize, int userId, CancellationToken cancellationToken = default)
+    {
+        return await _linkRepository.GetPaginatedByUserIdAsync(page, pageSize, userId, cancellationToken);
     }
 
     public async Task<LinkModel> RedirectByShortCodeAsync(string shortCode, ClickRequestDTO? clickRequest, CancellationToken cancellationToken = default)

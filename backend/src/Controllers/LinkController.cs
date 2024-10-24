@@ -35,6 +35,22 @@ public class LinkController : ControllerBase
         return Ok(data);
     }
 
+    [HttpGet("links/user")]
+    [Authorize]
+    public async Task<IActionResult> GetByUserIdAsync([FromQuery] PaginatedRequestDTO request, CancellationToken cancellationToken = default)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+
+        var data = await _service.GetPaginatedByUserIdAsync(request.Page, request.PageSize, Int32.Parse(userId), cancellationToken);
+
+        return Ok(data);
+    }
+
     [HttpPost("links")]
     [Authorize]
     public async Task<IActionResult> PostAsync([FromBody] LinkInsertRequestDTO dto, CancellationToken cancellationToken = default)

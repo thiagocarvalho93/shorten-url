@@ -26,6 +26,19 @@ public class LinkRepository
         return new PaginatedResponse<LinkModel>(data, count, page, pageSize);
     }
 
+    public async Task<PaginatedResponse<LinkModel>> GetPaginatedByUserIdAsync(int page, int pageSize, int userId, CancellationToken cancellationToken = default)
+    {
+        var count = await CountAsync(cancellationToken);
+        var data = await _context.Links
+            .Where(x => x.UserId == userId)
+            .OrderBy(x => x.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return new PaginatedResponse<LinkModel>(data, count, page, pageSize);
+    }
+
     public async Task<int[]> GetAllIdsAsync(CancellationToken cancellationToken = default)
     {
         return await _context.Links
