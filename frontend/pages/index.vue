@@ -60,7 +60,6 @@
 
 <script setup>
 import { onMounted, ref, computed } from "vue";
-import { useHead } from "#app";
 import { API_BASE_URL } from "@/constants";
 
 const longUrl = ref("");
@@ -79,9 +78,8 @@ const completeGeneratedUrl = computed(() =>
 );
 
 const handleGenerate = async () => {
-  console.log(invalidUrl.value);
-  
   if (invalidUrl.value) return;
+
   loading.value = true;
   try {
     const response = await $fetch(API_BASE_URL, {
