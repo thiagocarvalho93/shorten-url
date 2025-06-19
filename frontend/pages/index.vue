@@ -56,15 +56,12 @@
 import { onMounted, ref, computed } from "vue";
 import { API_BASE_URL } from "@/constants";
 import { useAuthFetch } from "~/composables/useAuthFetch";
+import { urlRegex } from "~/utils/regex-utils";
 
 const longUrl = ref("");
 const generatedToken = ref("");
 const loading = ref(false);
 const urlInput = ref(null);
-
-const urlRegex = new RegExp(
-  /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/
-);
 
 const invalidUrl = computed(() => !urlRegex.test(longUrl.value));
 
@@ -77,6 +74,7 @@ const handleGenerate = async () => {
 
   loading.value = true;
   try {
+    // TODO save with a name
     const { data } = await useAuthFetch(`${API_BASE_URL}links`, {
       method: "POST",
       body: { url: longUrl.value },
