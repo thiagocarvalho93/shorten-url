@@ -107,6 +107,9 @@ import { useRouter } from "vue-router";
 import { useHead } from "#app";
 import { API_BASE_URL } from "~/constants";
 
+definePageMeta({
+  layout: "offline",
+});
 const router = useRouter();
 const loading = ref(false);
 
