@@ -41,6 +41,8 @@
 </template>
 
 <script setup>
+import { API_BASE_URL } from '~/constants';
+
 const props = defineProps({
   links: {
     type: Array,
@@ -51,8 +53,7 @@ const props = defineProps({
 const emit = defineEmits(["copy"]);
 
 const shortUrl = (code) => {
-  const baseUrl = import.meta.env.PUBLIC_API_BASE_URL || "https://short.ly"; // fallback if no runtime config
-  return `${baseUrl}/${code}`;
+  return `${API_BASE_URL}/${code}`;
 };
 
 const copyShortUrl = async (code) => {
