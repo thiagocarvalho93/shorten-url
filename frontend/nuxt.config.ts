@@ -12,4 +12,5 @@ export default defineNuxtConfig({
       title: "ShortURLs",
     },
   },
+  ssr: false,
 });
