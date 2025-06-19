@@ -1,7 +1,9 @@
 function isLoggedIn() {
-  // check if logged in
-  console.log("not logged in!");
+  const token = localStorage.getItem("token");
 
+  if (token) {
+    return true;
+  }
   return false;
 }
 
@@ -10,7 +12,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
     return;
   }
 
-  // if (isLoggedIn() === false) {
-  //   return navigateTo("/login");
-  // }
+  if (isLoggedIn() === false) {
+    return navigateTo("/login");
+  }
 });

@@ -61,6 +61,7 @@
 <script setup>
 import { onMounted, ref, computed } from "vue";
 import { API_BASE_URL } from "@/constants";
+import { useAuthFetch } from "~/composables/useAuthFetch";
 
 const longUrl = ref("");
 const generatedUrl = ref({});
@@ -82,11 +83,12 @@ const handleGenerate = async () => {
 
   loading.value = true;
   try {
-    const response = await $fetch(API_BASE_URL, {
+    const response = await useAuthFetch(`${API_BASE_URL}links`, {
       method: "POST",
       body: { url: longUrl.value },
     });
-    generatedUrl.value = response;
+
+    generatedUrl.value = response.data;
   } catch (e) {
     alert(e?.data?.errors || "Error connecting to service!");
   } finally {

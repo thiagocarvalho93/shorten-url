@@ -26,7 +26,9 @@
         </div>
 
         <div>
-          <label for="password" class="block mb-1 text-sm font-medium dark:text-white">Password</label>
+          <label for="password" class="block mb-1 text-sm font-medium dark:text-white"
+            >Password</label
+          >
           <input
             v-model="password"
             type="password"
@@ -75,7 +77,7 @@ const loading = ref(false);
 const router = useRouter();
 
 useHead({
-  title: "Login | ShortURLs"
+  title: "Login | ShortURLs",
 });
 
 const handleLogin = async () => {
@@ -86,8 +88,9 @@ const handleLogin = async () => {
       body: { username: email.value, password: password.value },
     });
 
-    console.log(response);
-    
+    const { token } = response;
+    localStorage.setItem("token", token);
+
     router.push("/");
   } catch (e) {
     alert(e?.data?.message || "Login failed.");
