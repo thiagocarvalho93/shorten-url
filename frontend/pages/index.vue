@@ -32,7 +32,7 @@
           </button>
         </div>
 
-        <div v-if="generatedUrl.token" class="relative">
+        <div v-if="generatedToken.length" class="relative">
           <input
             readonly
             v-model="completeGeneratedUrl"
@@ -58,7 +58,7 @@ import { API_BASE_URL } from "@/constants";
 import { useAuthFetch } from "~/composables/useAuthFetch";
 
 const longUrl = ref("");
-const generatedUrl = ref({});
+const generatedToken = ref("");
 const loading = ref(false);
 const urlInput = ref(null);
 
@@ -69,7 +69,7 @@ const urlRegex = new RegExp(
 const invalidUrl = computed(() => !urlRegex.test(longUrl.value));
 
 const completeGeneratedUrl = computed(() =>
-  generatedUrl.value.token ? `${API_BASE_URL}/${generatedUrl.value.token}` : ""
+  generatedToken.value ? `${API_BASE_URL}${generatedToken.value}` : ""
 );
 
 const handleGenerate = async () => {
@@ -77,12 +77,12 @@ const handleGenerate = async () => {
 
   loading.value = true;
   try {
-    const response = await useAuthFetch(`${API_BASE_URL}links`, {
+    const { data } = await useAuthFetch(`${API_BASE_URL}links`, {
       method: "POST",
       body: { url: longUrl.value },
     });
 
-    generatedUrl.value = response.data;
+    generatedToken.value = data.value.shortCode;
   } catch (e) {
     alert(e?.data?.errors || "Error connecting to service!");
   } finally {
